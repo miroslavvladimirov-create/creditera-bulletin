@@ -6,9 +6,16 @@ const BRANDS = {
         headerTitle: 'АСОЦИАЦИЯ НА КРЕДИТНИТЕ ПОСРЕДНИЦИ',
         headerSubtitle: 'В БЪЛГАРИЯ',
         docTitle: 'ИНФОРМАЦИОНЕН БЮЛЕТИН',
-        docSubText: 'Ипотечни лихви • Брой',
+        docSubText: 'Ипотечен пазарен бюлетин • Брой',
         logoHtml: `
             <svg viewBox="0 0 100 100" class="pdf-logo-svg" style="width: 44px; height: 44px;">
+                <path d="M20,80 L20,40 L50,15 L80,40 L80,80 Z" fill="none" stroke="currentColor" stroke-width="5"/>
+                <path d="M35,80 L35,50 L65,50 L65,80" fill="none" stroke="currentColor" stroke-width="5"/>
+                <circle cx="50" cy="50" r="10" fill="var(--color-accent)"/>
+            </svg>
+        `,
+        miniLogoHtml: `
+            <svg viewBox="0 0 100 100" class="pdf-mini-logo-svg" style="width: 22px; height: 22px;">
                 <path d="M20,80 L20,40 L50,15 L80,40 L80,80 Z" fill="none" stroke="currentColor" stroke-width="5"/>
                 <path d="M35,80 L35,50 L65,50 L65,80" fill="none" stroke="currentColor" stroke-width="5"/>
                 <circle cx="50" cy="50" r="10" fill="var(--color-accent)"/>
@@ -23,8 +30,8 @@ const BRANDS = {
             textDark: '#1F2937'
         },
         footerTextPage1: 'АКПБ • Асоциация на кредитните посредници в България',
-        footerInfoPage2: '<span>АКПБ • Асоциация на кредитните посредници в България</span><span>Уебсайт: <a href="https://acib.bg" target="_blank">www.acib.bg</a> • Е-поща: office@acib.bg</span>',
-        disclaimer: 'Отказ от отговорност: Представените данни имат информативен характер и отразяват офертните условия на банките към момента на съставяне на бюлетина. АКПБ не носи отговорност за промени в тарифите на банковите институции.',
+        footerMini: 'АКПБ • Асоциация на кредитните посредници в България • www.acib.bg',
+        disclaimer: 'Отказ от отговорност: Представените данни имат информативен характер и отразяват официалната статистика на ЕЦБ и БНБ към момента на съставяне на бюлетина. АКПБ не носи отговорност за промени в тарифите на банковите институции.',
         compiler: {
             name: 'гл. ас. д-р Мирослав Владимиров',
             title: 'зам.-председател на УС на АКПБ',
@@ -39,12 +46,12 @@ const BRANDS = {
         headerTitle: 'ИПОТЕЧЕН БЮЛЕТИН',
         headerSubtitle: 'CreditERA',
         docTitle: 'ИПОТЕЧЕН БЮЛЕТИН',
-        docSubText: 'Ипотечни лихви • Брой',
+        docSubText: 'Ипотечен пазарен бюлетин • Брой',
         logoHtml: `
-            <img src="assets/creditera-logo.png" alt="CreditERA Logo" class="pdf-logo-img" style="height: 40px; width: auto; max-width: 140px; object-fit: contain;" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
-            <div class="logo-fallback" style="display: none; font-family: Montserrat; font-weight: 900; font-size: 20px; color: var(--color-primary); align-items: center; gap: 2px;">
-                <span style="color: var(--color-accent);">Credit</span>ERA
-            </div>
+            <img src="assets/creditera-logo.png" alt="CreditERA Logo" class="pdf-logo-img" style="height: 40px; width: auto; max-width: 140px; object-fit: contain;">
+        `,
+        miniLogoHtml: `
+            <img src="assets/creditera-logo.png" alt="CreditERA Logo" style="height: 18px; width: auto; max-width: 90px; object-fit: contain;">
         `,
         palette: {
             primary: '#202E64',
@@ -55,8 +62,8 @@ const BRANDS = {
             textDark: '#202E64'
         },
         footerTextPage1: 'CreditERA · mvladimirov@creditera.bg',
-        footerInfoPage2: '<span>CreditERA</span><span>Е-поща: mvladimirov@creditera.bg</span>',
-        disclaimer: 'Отказ от отговорност: Представените данни имат информативен характер и отразяват офертните условия на банките към момента на съставяне на бюлетина. CreditERA не носи отговорност за промени в тарифите на банковите институции.',
+        footerMini: 'CreditERA • Ипотечни и кредитни консултации • mvladimirov@creditera.bg',
+        disclaimer: 'Отказ от отговорност: Представените данни имат информативен характер и отразяват официалната статистика на ЕЦБ и БНБ към момента на съставяне на бюлетина. CreditERA не носи отговорност за промени в тарифите на банковите институции.',
         compiler: {
             name: 'гл. ас. д-р Мирослав Владимиров',
             title: '',
@@ -69,3 +76,4 @@ const BRANDS = {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { BRANDS };
 }
+

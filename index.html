@@ -11,10 +11,11 @@
     <!-- Lucide Icons (CDN) -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="style.css?v=20">
     <!-- CDNs for Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -72,76 +73,69 @@
                     <h3><i data-lucide="settings"></i> 2. Параметри на бюлетина</h3>
                     <div class="form-group">
                         <label for="bulletinNum">Бюлетин №</label>
-                        <input type="text" id="bulletinNum" value="06 / 2026">
+                        <input type="text" id="bulletinNum" value="07 / 2026">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="margin-top: 8px;">
                         <label for="bulletinMonth">Месец и Година</label>
-                        <input type="text" id="bulletinMonth" value="Юни 2026 г.">
+                        <input type="text" id="bulletinMonth" value="Юли 2026 г.">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="margin-top: 8px;">
                         <label for="bulletinAuthor">Изготвил</label>
                         <input type="text" id="bulletinAuthor" value="АКПБ (Асоциация на кредитните посредници в България)">
                     </div>
                 </div>
 
-                <!-- Step 2.5: Interactive Table Actions -->
+                <!-- Step 3: Page Layout Calibration Sliders -->
                 <div class="control-section">
-                    <h3><i data-lucide="edit-3"></i> 2.5. Управление на таблицата</h3>
-                    <button class="btn btn-secondary btn-full" id="btnAddHeader" style="margin-top: 8px;">
-                        <i data-lucide="heading"></i> Добави заглавен ред (разделител)
-                    </button>
-                    <button class="btn btn-secondary btn-full" id="btnAddIndicator" style="margin-top: 8px;">
-                        <i data-lucide="plus-circle"></i> Добави нов показател (ред)
-                    </button>
-                </div>
-
-                <!-- Step 2.8: Page Layout Calibration Slider (NEW) -->
-                <div class="control-section">
-                    <h3><i data-lucide="sliders"></i> 2.8. Напасване на А4 страници</h3>
+                    <h3><i data-lucide="sliders"></i> 3. Калибрация на страниците (8 x A4)</h3>
                     <div class="form-group">
                         <label for="sliderTableFont" style="display: flex; justify-content: space-between;">
-                            <span>Шрифт на таблицата:</span>
-                            <span id="lblTableFont" style="font-weight: 600; color: var(--color-gold);">8.0px</span>
+                            <span>Шрифт на таблиците:</span>
+                            <span id="lblTableFont" style="font-weight: 600; color: var(--color-gold);">7.5px</span>
                         </label>
-                        <input type="range" id="sliderTableFont" min="6.0" max="11.0" step="0.5" value="8.0" style="accent-color: var(--color-gold);">
+                        <input type="range" id="sliderTableFont" min="6.0" max="10.0" step="0.5" value="7.5" style="accent-color: var(--color-gold);">
                     </div>
                     <div class="form-group" style="margin-top: 8px;">
                         <label for="sliderChartHeight" style="display: flex; justify-content: space-between;">
-                            <span>Височина на графиката:</span>
-                            <span id="lblChartHeight" style="font-weight: 600; color: var(--color-gold);">160px</span>
+                            <span>Височина на графиките:</span>
+                            <span id="lblChartHeight" style="font-weight: 600; color: var(--color-gold);">140px</span>
                         </label>
-                        <input type="range" id="sliderChartHeight" min="100" max="220" step="10" value="160" style="accent-color: var(--color-gold);">
+                        <input type="range" id="sliderChartHeight" min="100" max="200" step="5" value="140" style="accent-color: var(--color-gold);">
                     </div>
                     <div class="form-group" style="margin-top: 8px;">
                         <label for="sliderSpacing" style="display: flex; justify-content: space-between;">
-                            <span>Отстояния (разредител):</span>
-                            <span id="lblSpacing" style="font-weight: 600; color: var(--color-gold);">20px</span>
+                            <span>Отстояния на секциите:</span>
+                            <span id="lblSpacing" style="font-weight: 600; color: var(--color-gold);">12px</span>
                         </label>
-                        <input type="range" id="sliderSpacing" min="10" max="30" step="2" value="20" style="accent-color: var(--color-gold);">
+                        <input type="range" id="sliderSpacing" min="6" max="24" step="2" value="12" style="accent-color: var(--color-gold);">
+                    </div>
+
+                    <!-- Overflow Warnings Container -->
+                    <div id="overflowWarnings" class="overflow-warnings-box hidden" style="margin-top: 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 6px; padding: 8px 10px; font-size: 11px; color: #fca5a5;">
+                        <div style="font-weight: 700; display: flex; align-items: center; gap: 5px; color: #ef4444;">
+                            <i data-lucide="alert-triangle" style="width: 14px; height: 14px;"></i> Внимание: Преливащи страници!
+                        </div>
+                        <div id="overflowList" style="margin-top: 4px; display: flex; flex-direction: column; gap: 2px;"></div>
                     </div>
                 </div>
 
-                <!-- Step 3: Commentary Editor -->
+                <!-- Step 4: Commentary Editor for Page 1 -->
                 <div class="control-section">
-                    <h3><i data-lucide="align-left"></i> 3. Пазарен обзор и коментар</h3>
+                    <h3><i data-lucide="align-left"></i> 4. Пазарен обзор (Стр. 1)</h3>
                     <div class="form-group">
-                        <label for="summaryText">Месечен анализ (Основен текст)</label>
-                        <textarea id="summaryText" rows="6" placeholder="Въведете вашия коментар тук...">През изминалия месец се наблюдава стабилност в нивата на ипотечните лихви в България, подкрепена от високата ликвидност на банковия сектор. В Еврозоната лихвените нива остават под влияние на решенията на Европейската централна банка (ЕЦБ), с тенденция към леко стабилизиране след последните корекции.</textarea>
+                        <label for="summaryText">Основен текст на обзора</label>
+                        <textarea id="summaryText" rows="6" placeholder="Въведете вашия пазарен анализ тук...">През юли 2026 г. лихвените нива по жилищните кредити в България запазват изключителна стабилност и остават едни от най-конкурентните в ЕС. Средната цена на новоотпуснатите жилищни кредити у нас е 2.43%, което формира отрицателен спред от -111 б.т. спрямо средното за Еврозоната (3.54%). Европейската централна банка запази основните си лихви без промяна през юли след серия от понижения през предходните месеци. Пазарните бенчмаркове (EURIBOR и €STR) отбелязват умерена корекция, докато годишният ръст на кредитните портфейли в България остава водещ в Европа (+25.72%).</textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="summaryTrends">Ключови тенденции (в бbullets)</label>
-                        <textarea id="summaryTrends" rows="4" placeholder="Една тенденция на ред...">• Задържане на лихвените нива в лева под 2.6% при водещите банки.
-• Леко повишение на лихвите в евро с оглед на пазарната конюнктура в ЕС.
-• Стабилен обем на новоотпуснатите кредити за покупка на жилища.</textarea>
-                    </div>
-                    <!-- Export & PDF Generation -->
-                <div class="card">
+                </div>
+
+                <!-- Export & PDF Generation -->
+                <div class="card" style="margin-top: 10px;">
                     <div class="card-header">
                         <i data-lucide="file-down"></i> Експорт и печат
                     </div>
                     <div class="card-body">
                         <button id="btnExportPDF" class="btn btn-primary" style="width: 100%;">
-                            <i data-lucide="file-text"></i> Генерирай PDF
+                            <i data-lucide="file-text"></i> Генерирай PDF (8 стр.)
                         </button>
                         <button id="btnExportBothPDF" class="btn btn-secondary" style="width: 100%; margin-top: 8px;">
                             <i data-lucide="files"></i> PDF за двата бранда
@@ -149,32 +143,8 @@
                     </div>
                 </div>
 
-                <!-- Layout Controls -->
-                <div class="card" id="layoutControlsCard">
-                    <div class="card-header">
-                        <i data-lucide="move"></i> Управление на обекта
-                    </div>
-                    <div class="card-body" style="display: flex; flex-direction: column; gap: 8px;">
-                        <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 5px;">Маркиран е обект. Можете да го местите или да променяте отстоянието му.</p>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            <button id="btnMoveUp" class="btn btn-secondary" title="Премести нагоре">
-                                <i data-lucide="arrow-up"></i> Нагоре
-                            </button>
-                            <button id="btnMoveDown" class="btn btn-secondary" title="Премести надолу">
-                                <i data-lucide="arrow-down"></i> Надолу
-                            </button>
-                            <button id="btnAddSpace" class="btn btn-secondary" title="Увеличи разстояние">
-                                <i data-lucide="plus"></i> Отстояние
-                            </button>
-                            <button id="btnRemoveSpace" class="btn btn-secondary" title="Намали разстояние">
-                                <i data-lucide="minus"></i> Отстояние
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Draft Controls -->
-                <div class="card" id="draftControlsCard" style="margin-top: 10px;">
+                <div class="card" id="draftControlsCard" style="margin-top: 10px; margin-bottom: 20px;">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <span><i data-lucide="save"></i> Чернова</span>
                         <span id="draftStatusBadge" style="font-size: 10px; color: var(--color-gold); font-family: monospace; font-weight: 600;">Няма чернова</span>
@@ -191,178 +161,452 @@
         <!-- Main Preview Area -->
         <main class="preview-area">
             <div class="preview-header">
-                <span class="preview-tag">Преглед в реално време (A4 формат, 2 страници - Напасвайте шрифтовете и отстоянията при преливане)</span>
+                <span class="preview-tag">Преглед в реално време (A4 формат, 8 страници — фиксирана височина 297mm)</span>
+                <span id="pageCountBadge" style="font-size: 12px; font-weight: 600; color: var(--color-primary); background: #e0e7ff; padding: 4px 10px; border-radius: 12px;">8 страници</span>
             </div>
             
             <div class="document-scroller">
-                <!-- Wrapper for capturing both pages -->
+                <!-- Wrapper for capturing all 8 pages -->
                 <div id="bulletinDocument" class="pdf-document-wrapper">
                     
-                    <!-- PAGE 1 -->
-                    <div class="pdf-page page-break-after">
+                    <!-- ========================================== -->
+                    <!-- PAGE 1: MARKET OVERVIEW & BENCHMARKS       -->
+                    <!-- ========================================== -->
+                    <div class="pdf-page page-break-after" id="page-1">
                         <!-- Branded Header -->
                         <header class="pdf-header">
-                            <div class="pdf-logo-box" id="brandHeaderLogoP1">
-                                <!-- Dynamically populated by brands.js -->
-                            </div>
+                            <div class="pdf-logo-box brand-header-logo" id="brandHeaderLogoP1"></div>
                             <div class="pdf-meta-box">
-                                <div class="pdf-doc-title" id="brandDocTitleP1">ИНФОРМАЦИОНЕН БЮЛЕТИН</div>
-                                <div class="pdf-doc-sub">Ипотечни лихви • Брой <span class="lblDocNum">06 / 2026</span></div>
-                                <div class="pdf-doc-date lblDocMonth">Юни 2026 г.</div>
+                                <div class="pdf-doc-title brand-doc-title" id="brandDocTitleP1">ИНФОРМАЦИОНЕН БЮЛЕТИН</div>
+                                <div class="pdf-doc-sub">Ипотечен пазарен бюлетин • Брой <span class="lblDocNum">07 / 2026</span></div>
+                                <div class="pdf-doc-date lblDocMonth">Юли 2026 г.</div>
                             </div>
                         </header>
 
                         <div class="pdf-divider"></div>
 
-                        <!-- Sortable Container Page 1 -->
-                        <div id="page1Sortable" class="sortable-container" style="display: flex; flex-direction: column; flex: 1;">
+                        <!-- Page 1 Content Grid -->
+                        <div class="page-content page-1-grid">
                             
-                            <!-- Market Overview Section -->
-                            <section class="pdf-section" id="section-market" style="margin-top: 0px;">
-                            <h2 class="pdf-section-title"><i data-lucide="trending-up" class="pdf-icon"></i> ПАЗАРЕН ОБЗОР & АНАЛИЗ</h2>
-                            <div class="pdf-grid-summary">
-                                <div class="pdf-summary-text" id="lblSummaryText" contenteditable="true">
-                                    <!-- Dynamic text populated by js -->
+                            <!-- Market Overview -->
+                            <section class="pdf-section section-overview">
+                                <h2 class="pdf-section-title">
+                                    <i data-lucide="trending-up" class="pdf-icon"></i> ПАЗАРЕН ОБЗОР & АНАЛИЗ
+                                </h2>
+                                <div class="pdf-market-commentary" id="lblSummaryText" contenteditable="true">
+                                    През юли 2026 г. лихвените нива по жилищните кредити в България запазват изключителна стабилност и остават едни от най-конкурентните в ЕС. Средната цена на новоотпуснатите жилищни кредити у нас е 2.43%, което формира отрицателен спред от -111 б.т. спрямо средното за Еврозоната (3.54%). Европейската централна банка запази основните си лихви без промяна през юли след серия от понижения през предходните месеци. Пазарните бенчмаркове (EURIBOR и €STR) отбелязват умерена корекция, докато годишният ръст на кредитните портфейли в България остава водещ в Европа (+25.72%).
                                 </div>
-                                <div class="pdf-trends-box">
-                                    <h4>Ключови акценти</h4>
-                                    <ul id="lblTrendsList">
-                                        <!-- Dynamic list populated by js -->
-                                    </ul>
-                                </div>
-                            </div>
-                        </section>
+                            </section>
 
-                            <!-- Key Stats Callout -->
-                            <section id="section-stats" style="margin-top: 15px;">
-                            
-                            <!-- Group 1 -->
-                            <h3 class="pdf-stats-group-title" contenteditable="true" style="margin-bottom: 8px; font-size: 13px; color: var(--color-primary); border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; text-align: center;">ЕЦБ Основни Лихви</h3>
-                            <div id="ecb-rates-row" class="pdf-stats-row" style="margin-bottom: 15px; display: flex; justify-content: center; gap: 15px;">
-                                <div class="pdf-stat-card pdf-stat-card-highlight" style="flex: 0 1 160px;">
-                                    <div class="stat-val" contenteditable="true">-- %</div>
-                                    <div class="stat-lbl" contenteditable="true">Депозитна лихва</div>
+                            <!-- ECB Policy Rates (3 cards) -->
+                            <section class="pdf-section section-ecb-rates">
+                                <h3 class="pdf-group-title">Основни лихвени проценти на ЕЦБ</h3>
+                                <div class="cards-grid-3">
+                                    <div class="kpi-card" id="card-ecb-dfr">
+                                        <div class="kpi-label">Депозитно улеснение (DFR)</div>
+                                        <div class="kpi-value" id="ecb-dfr-val">2.25 %</div>
+                                        <div class="kpi-delta delta-flat" id="ecb-dfr-delta">► 0.00 п.п.</div>
+                                    </div>
+                                    <div class="kpi-card" id="card-ecb-mro">
+                                        <div class="kpi-label">Основни операции по рефинансиране (MRO)</div>
+                                        <div class="kpi-value" id="ecb-mro-val">2.40 %</div>
+                                        <div class="kpi-delta delta-flat" id="ecb-mro-delta">► 0.00 п.п.</div>
+                                    </div>
+                                    <div class="kpi-card" id="card-ecb-mlf">
+                                        <div class="kpi-label">Пределно кредитно улеснение (MLF)</div>
+                                        <div class="kpi-value" id="ecb-mlf-val">2.65 %</div>
+                                        <div class="kpi-delta delta-flat" id="ecb-mlf-delta">► 0.00 п.п.</div>
+                                    </div>
                                 </div>
-                                <div class="pdf-stat-card pdf-stat-card-highlight" style="flex: 0 1 160px;">
-                                    <div class="stat-val" contenteditable="true">-- %</div>
-                                    <div class="stat-lbl" contenteditable="true">Основна лихва</div>
-                                </div>
-                                <div class="pdf-stat-card pdf-stat-card-highlight" style="flex: 0 1 160px;">
-                                    <div class="stat-val" contenteditable="true">-- %</div>
-                                    <div class="stat-lbl" contenteditable="true">Пределна лихва</div>
-                                </div>
-                            </div>
+                            </section>
 
-                            <!-- Group 2 -->
-                            <h3 class="pdf-stats-group-title" contenteditable="true" style="margin-bottom: 8px; font-size: 13px; color: var(--color-primary); border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Пазарни Лихви</h3>
-                            <div id="euribor-rates-row" class="pdf-stats-row" style="margin-bottom: 15px;">
-                                <div class="pdf-stat-card">
-                                    <div class="stat-val" contenteditable="true">-- %</div>
-                                    <div class="stat-lbl" contenteditable="true">EURIBOR 1M</div>
-                                </div>
-                                <div class="pdf-stat-card">
-                                    <div class="stat-val" contenteditable="true">-- %</div>
-                                    <div class="stat-lbl" contenteditable="true">EURIBOR 3M</div>
-                                </div>
-                                <div class="pdf-stat-card">
-                                    <div class="stat-val" contenteditable="true">-- %</div>
-                                    <div class="stat-lbl" contenteditable="true">EURIBOR 6M</div>
-                                </div>
-                                <div class="pdf-stat-card">
-                                    <div class="stat-val" contenteditable="true">-- %</div>
-                                    <div class="stat-lbl" contenteditable="true">EURIBOR 12M</div>
-                                </div>
-                            </div>
-
-                            <!-- Group 3 -->
-                            <h3 class="pdf-stats-group-title" contenteditable="true" style="margin-bottom: 8px; font-size: 13px; color: var(--color-primary); border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Ипотечни Лихви</h3>
-                            <div class="pdf-stats-row">
-                                <div class="pdf-stat-card">
-                                    <div class="stat-val" id="statAvgBGN" contenteditable="true">-- %</div>
-                                    <div class="stat-lbl" contenteditable="true">Лихва България (BG)</div>
-                                </div>
-                                <div class="pdf-stat-card">
-                                    <div class="stat-val" id="statMinBGN" contenteditable="true">-- %</div>
-                                    <div class="stat-lbl" contenteditable="true">Лихва Еврозона (U2)</div>
-                                </div>
-                                <div class="pdf-stat-card">
-                                    <div class="stat-val" id="statAvgEUR" contenteditable="true">-- %</div>
-                                    <div class="stat-lbl" contenteditable="true">Спред спрямо U2</div>
-                                </div>
-                                <div class="pdf-stat-card">
-                                    <div class="stat-val" id="statMinEUR" contenteditable="true">-- %</div>
-                                    <div class="stat-lbl" contenteditable="true">Най-висока лихва</div>
-                                </div>
-                            </div>
-                        </section>
-
-                        </div>
-
-                        <!-- Page 1 Footer -->
-                        <footer class="pdf-footer" style="margin-top: auto; border-top: 1px solid var(--color-border); padding-top: 8px;">
-                            <div class="footer-info" id="brandFooterP1">
-                                <!-- Dynamically populated by brands.js -->
-                            </div>
-                        </footer>
-                    </div>
-
-                    <!-- PAGE 2 -->
-                    <div class="pdf-page">
-                        <!-- Branded Mini Header for Page 2 -->
-                        <header class="pdf-header">
-                            <div class="pdf-logo-box" id="brandHeaderLogoP2">
-                                <!-- Dynamically populated by brands.js -->
-                            </div>
-                            <div class="pdf-meta-box">
-                                <div class="pdf-doc-sub" style="margin-top: 0;">Ипотечни лихви • Брой <span class="lblDocNum">06 / 2026</span></div>
-                                <div class="pdf-doc-date lblDocMonth" style="font-size: 10px;">Юни 2026 г.</div>
-                            </div>
-                        </header>
-
-                        <div class="pdf-divider" style="margin-bottom: 15px;"></div>
-
-                        <!-- Sortable Container Page 2 -->
-                        <div id="page2Sortable" class="sortable-container" style="display: flex; flex-direction: column; flex: 1;">
-
-                            <!-- Master Comparison Table on Page 2 (Horizontal countries) -->
-                            <section class="pdf-section" id="section-table" style="display: flex; flex-direction: column; margin-top: 0px;">
-                            <h2 class="pdf-section-title"><i data-lucide="table" class="pdf-icon"></i> СРАВНИТЕЛЕН ПАЗАРЕН АНАЛИЗ ПО ДЪРЖАВИ</h2>
-                            
-                            <div class="tables-container" style="flex: 1; overflow-x: auto; overflow-y: visible; max-width: 100%;">
-                                <table class="pdf-table" id="masterTable">
-                                    <thead>
-                                        <tr id="tableHeaders">
-                                            <!-- Dynamically populated headers -->
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tableBody">
-                                        <!-- Dynamically populated rows -->
-                                    </tbody>
-                                </table>
-                                <div id="tableNotes" class="pdf-table-notes" contenteditable="true" style="font-size: 7.5px; color: #64748b; margin-top: 6px; line-height: 1.35; padding: 2px 4px; border-left: 2px solid #cbd5e1;"></div>
-                            </div>
-                        </section>
-
-                            <!-- Charts on Page 2 -->
-                            <section class="pdf-section" id="section-charts" style="margin-top: 20px;">
-                                <h2 class="pdf-section-title"><i data-lucide="bar-chart-2" class="pdf-icon"></i> ГРАФИКИ НА ИЗБРАНИТЕ ПОКАЗАТЕЛИ</h2>
-                                <div id="chartsContainer" class="pdf-charts-grid">
-                                    <!-- Dynamic charts here -->
+                            <!-- Benchmark Indices (5 cards) -->
+                            <section class="pdf-section section-benchmarks">
+                                <h3 class="pdf-group-title">Бенчмарк индекси — средни за месеца</h3>
+                                <div class="cards-grid-5">
+                                    <div class="kpi-card" id="card-bench-e1m">
+                                        <div class="kpi-label">EURIBOR 1M</div>
+                                        <div class="kpi-value" id="bench-e1m-val">2.21 %</div>
+                                        <div class="kpi-delta delta-up" id="bench-e1m-delta">▲ +0.07 п.п.</div>
+                                    </div>
+                                    <div class="kpi-card" id="card-bench-e3m">
+                                        <div class="kpi-label">EURIBOR 3M</div>
+                                        <div class="kpi-value" id="bench-e3m-val">2.43 %</div>
+                                        <div class="kpi-delta delta-up" id="bench-e3m-delta">▲ +0.09 п.п.</div>
+                                    </div>
+                                    <div class="kpi-card" id="card-bench-e6m">
+                                        <div class="kpi-label">EURIBOR 6M</div>
+                                        <div class="kpi-value" id="bench-e6m-val">2.65 %</div>
+                                        <div class="kpi-delta delta-up" id="bench-e6m-delta">▲ +0.05 п.п.</div>
+                                    </div>
+                                    <div class="kpi-card" id="card-bench-e1y">
+                                        <div class="kpi-label">EURIBOR 1Y</div>
+                                        <div class="kpi-value" id="bench-e1y-val">2.86 %</div>
+                                        <div class="kpi-delta delta-up" id="bench-e1y-delta">▲ +0.06 п.п.</div>
+                                    </div>
+                                    <div class="kpi-card" id="card-bench-estr">
+                                        <div class="kpi-label">€STR</div>
+                                        <div class="kpi-value" id="bench-estr-val">2.18 %</div>
+                                        <div class="kpi-delta delta-up" id="bench-estr-delta">▲ +0.14 п.п.</div>
+                                    </div>
                                 </div>
                             </section>
 
                         </div>
 
-                        <!-- Footer on Page 2 -->
-                        <footer class="pdf-footer" style="margin-top: auto;">
-                            <div id="compilerLine" class="footer-compiler" contenteditable="true" style="font-size: 8.5px; color: #475569; margin-bottom: 4px;">
-                                <!-- Dynamically populated by js -->
+                        <!-- Page 1 Footer -->
+                        <footer class="pdf-footer">
+                            <div class="footer-info brand-footer-p1" id="brandFooterP1"></div>
+                            <div class="footer-page-num">Страница 1 от 8</div>
+                        </footer>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- PAGES 2 TO 8: 7 INDICATOR PAGES            -->
+                    <!-- ========================================== -->
+
+                    <!-- PAGE 2: rate -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-2" data-indicator="rate" data-kind="rate">
+                        <header class="pdf-mini-header">
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP2"></div>
+                            <div class="pdf-mini-meta">
+                                <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
+                                <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
+                                <span class="lblDocMonth">Юли 2026 г.</span>
                             </div>
-                            <div class="footer-info" id="brandFooterP2">
-                                <!-- Dynamically populated by brands.js -->
+                        </header>
+                        <div class="pdf-divider-mini"></div>
+                        <div class="indicator-header-block">
+                            <h2 class="indicator-title" id="title-rate">Лихва по нови жилищни кредити (средна)</h2>
+                            <div class="indicator-commentary" id="commentary-rate" contenteditable="true">
+                                Средната цена на новите жилищни кредити (Cost of Borrowing) отразява реално договорените лихвени проценти по всички видове новоотпуснати ипотечни заеми за домакинства.
                             </div>
-                            <div class="footer-disclaimer" id="brandDisclaimer">
-                                <!-- Dynamically populated by brands.js -->
+                        </div>
+                        <div class="indicator-table-wrapper">
+                            <table class="indicator-table" id="table-rate">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 28%;">Държава</th>
+                                        <th style="width: 16%;">Стойност</th>
+                                        <th style="width: 14%;">Δ 1М</th>
+                                        <th style="width: 14%;">Δ 3М</th>
+                                        <th style="width: 14%;">Δ 6М</th>
+                                        <th style="width: 14%;">Δ 12М</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-rate"></tbody>
+                            </table>
+                        </div>
+                        <div class="indicator-chart-wrapper">
+                            <canvas id="chart-rate"></canvas>
+                        </div>
+                        <div class="indicator-notes-block">
+                            <div class="indicator-warnings" id="warnings-rate"></div>
+                            <div class="indicator-footnote" id="footnote-rate" style="display: none;">
+                                * Сегменти с ограничен обем на нов бизнес могат да показват нетипични стойности.
+                            </div>
+                        </div>
+                        <footer class="pdf-footer">
+                            <div class="footer-bottom-line">
+                                <div class="footer-info brand-footer-mini" id="brandFooterP2"></div>
+                                <div class="footer-page-num">Страница 2 от 8</div>
+                            </div>
+                        </footer>
+                    </div>
+
+                    <!-- PAGE 3: fix_f -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-3" data-indicator="fix_f" data-kind="rate">
+                        <header class="pdf-mini-header">
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP3"></div>
+                            <div class="pdf-mini-meta">
+                                <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
+                                <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
+                                <span class="lblDocMonth">Юли 2026 г.</span>
+                            </div>
+                        </header>
+                        <div class="pdf-divider-mini"></div>
+                        <div class="indicator-header-block">
+                            <h2 class="indicator-title" id="title-fix_f">Плаваща лихва / фиксирана до 1 г.</h2>
+                            <div class="indicator-commentary" id="commentary-fix_f" contenteditable="true">
+                                Лихвени проценти по нови жилищни кредити с плаваща лихва или първоначално фиксиран период до 1 година. В България този сегмент формира преобладаващата част от пазара.
+                            </div>
+                        </div>
+                        <div class="indicator-table-wrapper">
+                            <table class="indicator-table" id="table-fix_f">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 28%;">Държава</th>
+                                        <th style="width: 16%;">Стойност</th>
+                                        <th style="width: 14%;">Δ 1М</th>
+                                        <th style="width: 14%;">Δ 3М</th>
+                                        <th style="width: 14%;">Δ 6М</th>
+                                        <th style="width: 14%;">Δ 12М</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-fix_f"></tbody>
+                            </table>
+                        </div>
+                        <div class="indicator-chart-wrapper">
+                            <canvas id="chart-fix_f"></canvas>
+                        </div>
+                        <div class="indicator-notes-block">
+                            <div class="indicator-warnings" id="warnings-fix_f"></div>
+                            <div class="indicator-footnote" id="footnote-fix_f" style="display: none;">
+                                * Сегменти с ограничен обем на нов бизнес могат да показват нетипични стойности.
+                            </div>
+                        </div>
+                        <footer class="pdf-footer">
+                            <div class="footer-bottom-line">
+                                <div class="footer-info brand-footer-mini" id="brandFooterP3"></div>
+                                <div class="footer-page-num">Страница 3 от 8</div>
+                            </div>
+                        </footer>
+                    </div>
+
+                    <!-- PAGE 4: fix_i -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-4" data-indicator="fix_i" data-kind="rate">
+                        <header class="pdf-mini-header">
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP4"></div>
+                            <div class="pdf-mini-meta">
+                                <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
+                                <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
+                                <span class="lblDocMonth">Юли 2026 г.</span>
+                            </div>
+                        </header>
+                        <div class="pdf-divider-mini"></div>
+                        <div class="indicator-header-block">
+                            <h2 class="indicator-title" id="title-fix_i">Фиксирана лихва над 1 до 5 г.</h2>
+                            <div class="indicator-commentary" id="commentary-fix_i" contenteditable="true">
+                                Лихвени проценти по нови жилищни заеми с първоначално фиксиране между 1 и 5 години, предоставящи средносрочна сигурност на месечната вноска.
+                            </div>
+                        </div>
+                        <div class="indicator-table-wrapper">
+                            <table class="indicator-table" id="table-fix_i">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 28%;">Държава</th>
+                                        <th style="width: 16%;">Стойност</th>
+                                        <th style="width: 14%;">Δ 1М</th>
+                                        <th style="width: 14%;">Δ 3М</th>
+                                        <th style="width: 14%;">Δ 6М</th>
+                                        <th style="width: 14%;">Δ 12М</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-fix_i"></tbody>
+                            </table>
+                        </div>
+                        <div class="indicator-chart-wrapper">
+                            <canvas id="chart-fix_i"></canvas>
+                        </div>
+                        <div class="indicator-notes-block">
+                            <div class="indicator-warnings" id="warnings-fix_i"></div>
+                            <div class="indicator-footnote" id="footnote-fix_i" style="display: none;">
+                                * Сегменти с ограничен обем на нов бизнес могат да показват нетипични стойности.
+                            </div>
+                        </div>
+                        <footer class="pdf-footer">
+                            <div class="footer-bottom-line">
+                                <div class="footer-info brand-footer-mini" id="brandFooterP4"></div>
+                                <div class="footer-page-num">Страница 4 от 8</div>
+                            </div>
+                        </footer>
+                    </div>
+
+                    <!-- PAGE 5: fix_o -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-5" data-indicator="fix_o" data-kind="rate">
+                        <header class="pdf-mini-header">
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP5"></div>
+                            <div class="pdf-mini-meta">
+                                <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
+                                <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
+                                <span class="lblDocMonth">Юли 2026 г.</span>
+                            </div>
+                        </header>
+                        <div class="pdf-divider-mini"></div>
+                        <div class="indicator-header-block">
+                            <h2 class="indicator-title" id="title-fix_o">Фиксирана лихва над 5 до 10 г.</h2>
+                            <div class="indicator-commentary" id="commentary-fix_o" contenteditable="true">
+                                Лихвени проценти по нови жилищни кредити с първоначален период на фиксиране между 5 и 10 години.
+                            </div>
+                        </div>
+                        <div class="indicator-table-wrapper">
+                            <table class="indicator-table" id="table-fix_o">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 28%;">Държава</th>
+                                        <th style="width: 16%;">Стойност</th>
+                                        <th style="width: 14%;">Δ 1М</th>
+                                        <th style="width: 14%;">Δ 3М</th>
+                                        <th style="width: 14%;">Δ 6М</th>
+                                        <th style="width: 14%;">Δ 12М</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-fix_o"></tbody>
+                            </table>
+                        </div>
+                        <div class="indicator-chart-wrapper">
+                            <canvas id="chart-fix_o"></canvas>
+                        </div>
+                        <div class="indicator-notes-block">
+                            <div class="indicator-warnings" id="warnings-fix_o"></div>
+                            <div class="indicator-footnote" id="footnote-fix_o" style="display: none;">
+                                * Сегменти с ограничен обем на нов бизнес могат да показват нетипични стойности.
+                            </div>
+                        </div>
+                        <footer class="pdf-footer">
+                            <div class="footer-bottom-line">
+                                <div class="footer-info brand-footer-mini" id="brandFooterP5"></div>
+                                <div class="footer-page-num">Страница 5 от 8</div>
+                            </div>
+                        </footer>
+                    </div>
+
+                    <!-- PAGE 6: fix_p -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-6" data-indicator="fix_p" data-kind="rate">
+                        <header class="pdf-mini-header">
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP6"></div>
+                            <div class="pdf-mini-meta">
+                                <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
+                                <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
+                                <span class="lblDocMonth">Юли 2026 г.</span>
+                            </div>
+                        </header>
+                        <div class="pdf-divider-mini"></div>
+                        <div class="indicator-header-block">
+                            <h2 class="indicator-title" id="title-fix_p">Фиксирана лихва над 10 г.</h2>
+                            <div class="indicator-commentary" id="commentary-fix_p" contenteditable="true">
+                                Дългосрочно фиксирани лихвени проценти за период над 10 години, типични за пазари като Франция, Германия, Белгия и Нидерландия.
+                            </div>
+                        </div>
+                        <div class="indicator-table-wrapper">
+                            <table class="indicator-table" id="table-fix_p">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 28%;">Държава</th>
+                                        <th style="width: 16%;">Стойност</th>
+                                        <th style="width: 14%;">Δ 1М</th>
+                                        <th style="width: 14%;">Δ 3М</th>
+                                        <th style="width: 14%;">Δ 6М</th>
+                                        <th style="width: 14%;">Δ 12М</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-fix_p"></tbody>
+                            </table>
+                        </div>
+                        <div class="indicator-chart-wrapper">
+                            <canvas id="chart-fix_p"></canvas>
+                        </div>
+                        <div class="indicator-notes-block">
+                            <div class="indicator-warnings" id="warnings-fix_p"></div>
+                            <div class="indicator-footnote" id="footnote-fix_p" style="display: none;">
+                                * Сегменти с ограничен обем на нов бизнес могат да показват нетипични стойности.
+                            </div>
+                        </div>
+                        <footer class="pdf-footer">
+                            <div class="footer-bottom-line">
+                                <div class="footer-info brand-footer-mini" id="brandFooterP6"></div>
+                                <div class="footer-page-num">Страница 6 от 8</div>
+                            </div>
+                        </footer>
+                    </div>
+
+                    <!-- PAGE 7: loan_growth_yoy -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-7" data-indicator="loan_growth_yoy" data-kind="growth">
+                        <header class="pdf-mini-header">
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP7"></div>
+                            <div class="pdf-mini-meta">
+                                <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
+                                <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
+                                <span class="lblDocMonth">Юли 2026 г.</span>
+                            </div>
+                        </header>
+                        <div class="pdf-divider-mini"></div>
+                        <div class="indicator-header-block">
+                            <h2 class="indicator-title" id="title-loan_growth_yoy">Годишен ръст на жилищните кредити (салда)</h2>
+                            <div class="indicator-commentary" id="commentary-loan_growth_yoy" contenteditable="true">
+                                Годишен темп на прираст на общата наличност (салда) по жилищни кредити за домакинства, коригиран за прекласификации и трансакции (BSI статистика).
+                            </div>
+                        </div>
+                        <div class="indicator-table-wrapper">
+                            <table class="indicator-table" id="table-loan_growth_yoy">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 28%;">Държава</th>
+                                        <th style="width: 16%;">Стойност</th>
+                                        <th style="width: 14%;">Δ 1М</th>
+                                        <th style="width: 14%;">Δ 3М</th>
+                                        <th style="width: 14%;">Δ 6М</th>
+                                        <th style="width: 14%;">Δ 12М</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-loan_growth_yoy"></tbody>
+                            </table>
+                        </div>
+                        <div class="indicator-chart-wrapper">
+                            <canvas id="chart-loan_growth_yoy"></canvas>
+                        </div>
+                        <div class="indicator-notes-block">
+                            <div class="indicator-warnings" id="warnings-loan_growth_yoy"></div>
+                            <div class="indicator-footnote" id="footnote-loan_growth_yoy" style="display: none;">
+                                * Сегменти с ограничен обем на нов бизнес могат да показват нетипични стойности.
+                            </div>
+                        </div>
+                        <footer class="pdf-footer">
+                            <div class="footer-bottom-line">
+                                <div class="footer-info brand-footer-mini" id="brandFooterP7"></div>
+                                <div class="footer-page-num">Страница 7 от 8</div>
+                            </div>
+                        </footer>
+                    </div>
+
+                    <!-- PAGE 8: rate_outstanding + COMPILER & DISCLAIMER -->
+                    <div class="pdf-page indicator-page" id="page-8" data-indicator="rate_outstanding" data-kind="rate">
+                        <header class="pdf-mini-header">
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP8"></div>
+                            <div class="pdf-mini-meta">
+                                <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
+                                <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
+                                <span class="lblDocMonth">Юли 2026 г.</span>
+                            </div>
+                        </header>
+                        <div class="pdf-divider-mini"></div>
+                        <div class="indicator-header-block">
+                            <h2 class="indicator-title" id="title-rate_outstanding">Лихва по съществуващите жилищни кредити (салда)</h2>
+                            <div class="indicator-commentary" id="commentary-rate_outstanding" contenteditable="true">
+                                Среднопретеглен лихвен процент по цялата съществуваща наличност (салда) от жилищни заеми, отразяващ реалната тежест върху обслужваните от домакинствата кредити.
+                            </div>
+                        </div>
+                        <div class="indicator-table-wrapper">
+                            <table class="indicator-table" id="table-rate_outstanding">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 28%;">Държава</th>
+                                        <th style="width: 16%;">Стойност</th>
+                                        <th style="width: 14%;">Δ 1М</th>
+                                        <th style="width: 14%;">Δ 3М</th>
+                                        <th style="width: 14%;">Δ 6М</th>
+                                        <th style="width: 14%;">Δ 12М</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-rate_outstanding"></tbody>
+                            </table>
+                        </div>
+                        <div class="indicator-chart-wrapper">
+                            <canvas id="chart-rate_outstanding"></canvas>
+                        </div>
+                        <div class="indicator-notes-block">
+                            <div class="indicator-warnings" id="warnings-rate_outstanding"></div>
+                            <div class="indicator-footnote" id="footnote-rate_outstanding" style="display: none;">
+                                * Сегменти с ограничен обем на нов бизнес могат да показват нетипични стойности.
+                            </div>
+                        </div>
+                        <!-- Footer Page 8 with Compiler & Disclaimer -->
+                        <footer class="pdf-footer footer-page-8" style="margin-top: auto;">
+                            <div id="compilerLine" class="footer-compiler" contenteditable="true"></div>
+                            <div class="footer-disclaimer" id="brandDisclaimer"></div>
+                            <div class="footer-bottom-line">
+                                <div class="footer-info brand-footer-mini" id="brandFooterP8"></div>
+                                <div class="footer-page-num">Страница 8 от 8</div>
                             </div>
                         </footer>
                     </div>
@@ -373,11 +617,12 @@
     </div>
 
     <!-- Script imports -->
-    <script src="brands.js?v=1"></script>
-    <script src="app.js?v=16"></script>
+    <script src="brands.js?v=2"></script>
+    <script src="app.js?v=20"></script>
     <script>
         // Initialize lucide icons
         lucide.createIcons();
     </script>
 </body>
 </html>
+
