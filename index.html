@@ -39,6 +39,15 @@
             </div>
 
             <div class="sidebar-content">
+                <!-- Brand Selection -->
+                <div class="control-section">
+                    <h3><i data-lucide="award"></i> Бранд</h3>
+                    <div class="brand-btn-group">
+                        <button type="button" class="btn btn-secondary btn-full brand-btn active" id="btnBrandAkpb" data-brand="akpb">АКПБ</button>
+                        <button type="button" class="btn btn-secondary btn-full brand-btn" id="btnBrandCreditera" data-brand="creditera">CreditERA</button>
+                    </div>
+                </div>
+
                 <!-- Step 1: Upload Excel / JSON -->
                 <div class="control-section">
                     <h3><i data-lucide="file-spreadsheet"></i> 1. Данни (JSON / Excel)</h3>
@@ -134,6 +143,9 @@
                         <button id="btnExportPDF" class="btn btn-primary" style="width: 100%;">
                             <i data-lucide="file-text"></i> Генерирай PDF
                         </button>
+                        <button id="btnExportBothPDF" class="btn btn-secondary" style="width: 100%; margin-top: 8px;">
+                            <i data-lucide="files"></i> PDF за двата бранда
+                        </button>
                     </div>
                 </div>
 
@@ -190,19 +202,11 @@
                     <div class="pdf-page page-break-after">
                         <!-- Branded Header -->
                         <header class="pdf-header">
-                            <div class="pdf-logo-box">
-                                <svg viewBox="0 0 100 100" class="pdf-logo-svg">
-                                    <path d="M20,80 L20,40 L50,15 L80,40 L80,80 Z" fill="none" stroke="#0B2545" stroke-width="5"/>
-                                    <path d="M35,80 L35,50 L65,50 L65,80" fill="none" stroke="#0B2545" stroke-width="5"/>
-                                    <circle cx="50" cy="50" r="10" fill="#EEB902"/>
-                                </svg>
-                                <div class="pdf-brand-text">
-                                    <h1>АСОЦИАЦИЯ НА КРЕДИТНИТЕ ПОСРЕДНИЦИ</h1>
-                                    <p>В БЪЛГАРИЯ</p>
-                                </div>
+                            <div class="pdf-logo-box" id="brandHeaderLogoP1">
+                                <!-- Dynamically populated by brands.js -->
                             </div>
                             <div class="pdf-meta-box">
-                                <div class="pdf-doc-title">ИНФОРМАЦИОНЕН БЮЛЕТИН</div>
+                                <div class="pdf-doc-title" id="brandDocTitleP1">ИНФОРМАЦИОНЕН БЮЛЕТИН</div>
                                 <div class="pdf-doc-sub">Ипотечни лихви • Брой <span class="lblDocNum">06 / 2026</span></div>
                                 <div class="pdf-doc-date lblDocMonth">Юни 2026 г.</div>
                             </div>
@@ -296,9 +300,8 @@
 
                         <!-- Page 1 Footer -->
                         <footer class="pdf-footer" style="margin-top: auto; border-top: 1px solid var(--color-border); padding-top: 8px;">
-                            <div class="footer-info">
-                                <span>АКПБ • Асоциация на кредитните посредници в България</span>
-                                <span>Страница 1 от 2</span>
+                            <div class="footer-info" id="brandFooterP1">
+                                <!-- Dynamically populated by brands.js -->
                             </div>
                         </footer>
                     </div>
@@ -307,16 +310,8 @@
                     <div class="pdf-page">
                         <!-- Branded Mini Header for Page 2 -->
                         <header class="pdf-header">
-                            <div class="pdf-logo-box">
-                                <svg viewBox="0 0 100 100" class="pdf-logo-svg" style="width: 38px; height: 38px;">
-                                    <path d="M20,80 L20,40 L50,15 L80,40 L80,80 Z" fill="none" stroke="#0B2545" stroke-width="5"/>
-                                    <path d="M35,80 L35,50 L65,50 L65,80" fill="none" stroke="#0B2545" stroke-width="5"/>
-                                    <circle cx="50" cy="50" r="10" fill="#EEB902"/>
-                                </svg>
-                                <div class="pdf-brand-text">
-                                    <h1 style="font-size: 13px;">АСОЦИАЦИЯ НА КРЕДИТНИТЕ ПОСРЕДНИЦИ</h1>
-                                    <p style="font-size: 10px;">В БЪЛГАРИЯ</p>
-                                </div>
+                            <div class="pdf-logo-box" id="brandHeaderLogoP2">
+                                <!-- Dynamically populated by brands.js -->
                             </div>
                             <div class="pdf-meta-box">
                                 <div class="pdf-doc-sub" style="margin-top: 0;">Ипотечни лихви • Брой <span class="lblDocNum">06 / 2026</span></div>
@@ -356,18 +351,18 @@
                                 </div>
                             </section>
 
+                        </div>
+
                         <!-- Footer on Page 2 -->
                         <footer class="pdf-footer" style="margin-top: auto;">
                             <div id="compilerLine" class="footer-compiler" contenteditable="true" style="font-size: 8.5px; color: #475569; margin-bottom: 4px;">
                                 <!-- Dynamically populated by js -->
                             </div>
-                            <div class="footer-info">
-                                <span>АКПБ • Асоциация на кредитните посредници в България</span>
-                                <span>Уебсайт: <a href="https://acib.bg" target="_blank">www.acib.bg</a> • Е-поща: office@acib.bg</span>
-                                <span>Страница 2 от 2</span>
+                            <div class="footer-info" id="brandFooterP2">
+                                <!-- Dynamically populated by brands.js -->
                             </div>
-                            <div class="footer-disclaimer">
-                                Отказ от отговорност: Представените данни имат информативен характер и отразяват офертните условия на банките към момента на съставяне на бюлетина. АКПБ не носи отговорност за промени в тарифите на банковите институции.
+                            <div class="footer-disclaimer" id="brandDisclaimer">
+                                <!-- Dynamically populated by brands.js -->
                             </div>
                         </footer>
                     </div>
@@ -378,7 +373,8 @@
     </div>
 
     <!-- Script imports -->
-    <script src="app.js?v=15"></script>
+    <script src="brands.js?v=1"></script>
+    <script src="app.js?v=16"></script>
     <script>
         // Initialize lucide icons
         lucide.createIcons();

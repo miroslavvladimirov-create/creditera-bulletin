@@ -6,9 +6,11 @@
     --color-text-light: #ffffff;
     --color-text-dark: #1f2937;
     --color-text-muted: #718096;
-    --color-primary: #1b2545;
+    --color-primary: #0b2545;
     --color-primary-light: #314575;
-    --color-gold: #e2b902;
+    --color-accent: #eeb902;
+    --color-accent-dark: #dca307;
+    --color-gold: #eeb902;
     --color-gold-dark: #dca307;
     --color-border: #e5e7eb;
     --color-success: #10b981;
@@ -18,6 +20,47 @@
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --brand-divider-gradient: linear-gradient(90deg, #0b2545 0%, #eeb902 100%);
+}
+
+/* Brand-specific Themes */
+body[data-brand="akpb"],
+body:not([data-brand]) {
+    --color-primary: #0b2545;
+    --color-primary-light: #314575;
+    --color-accent: #eeb902;
+    --color-accent-dark: #dca307;
+    --color-gold: #eeb902;
+    --color-gold-dark: #dca307;
+    --color-bg-light: #f4f7f9;
+    --brand-divider-gradient: linear-gradient(90deg, #0b2545 0%, #eeb902 100%);
+}
+
+body[data-brand="creditera"] {
+    --color-primary: #202E64;
+    --color-primary-light: #2c3e80;
+    --color-accent: #3EA93F;
+    --color-accent-dark: #328c33;
+    --color-gold: #3EA93F;
+    --color-gold-dark: #328c33;
+    --color-bg-light: #F1F8F1;
+    --brand-divider-gradient: linear-gradient(90deg, #202E64 0%, #3EA93F 100%);
+}
+
+.brand-btn-group {
+    display: flex;
+    gap: 6px;
+}
+
+.brand-btn {
+    transition: var(--transition);
+}
+
+.brand-btn.active {
+    background-color: var(--color-gold);
+    color: var(--color-bg-sidebar);
+    font-weight: 700;
+    border-color: var(--color-gold);
 }
 
 /* Reset & Global Styles */
@@ -423,7 +466,7 @@ body {
 
 .pdf-divider {
     height: 3px;
-    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-gold) 100%);
+    background: var(--brand-divider-gradient);
     margin-top: 8px;
     margin-bottom: 20px;
     border-radius: 2px;
@@ -472,8 +515,8 @@ body {
 }
 
 .pdf-trends-box {
-    background-color: var(--color-bg-app);
-    border-left: 3px solid var(--color-gold-dark);
+    background-color: var(--color-bg-light);
+    border-left: 3px solid var(--color-accent-dark);
     padding: 10px 12px;
     border-radius: 0 6px 6px 0;
 }

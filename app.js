@@ -95,6 +95,7 @@ let currentEuribor = null;
 let lastLoadedJson = null;
 let selectedSection = null;
 let saveDraftTimeout = null;
+let currentBrand = 'akpb';
 
 function generateId() {
     return Math.random().toString(36).substr(2, 9);
@@ -166,6 +167,7 @@ function saveDraft() {
 
     const draftData = {
         savedAt: new Date().toISOString(),
+        brand: currentBrand,
         inputNum: inputNum ? inputNum.value : '',
         inputMonth: inputMonth ? inputMonth.value : '',
         inputAuthor: inputAuthor ? inputAuthor.value : '',
@@ -211,6 +213,11 @@ function restoreDraft(key) {
     try {
         const draft = JSON.parse(raw);
         if (!draft) return false;
+
+        // 0. Brand Theme
+        if (draft.brand) {
+            setBrand(draft.brand, false, false);
+        }
 
         // 1. Text and contenteditable fields
         if (draft.inputNum && inputNum) {
@@ -333,6 +340,7 @@ function restoreDraft(key) {
 
 // Init Application
 function initApp() {
+    setBrand(currentBrand, false, false);
     setupEventListeners();
     updateLivePreview();
     renderCompilerLine();
@@ -504,7 +512,62 @@ function renderTableNotes(jsonData) {
 
 function renderCompilerLine() {
     if (!compilerLine) return;
-    compilerLine.innerHTML = `Съставител: ${escapeHTML(COMPILER_NAME)}, ${escapeHTML(COMPILER_TITLE)} · <a href="mailto:${escapeHTML(COMPILER_EMAIL)}" style="color: inherit; text-decoration: underline;">${escapeHTML(COMPILER_EMAIL)}</a>`;
+    const b = (typeof BRANDS !== 'undefined' && BRANDS[currentBrand]) ? BRANDS[currentBrand] : null;
+    const name = (b && b.compiler && b.compiler.name) ? b.compiler.name : COMPILER_NAME;
+    const title = (b && b.compiler && b.compiler.title !== undefined) ? b.compiler.title : COMPILER_TITLE;
+    const email = (b && b.compiler && b.compiler.email) ? b.compiler.email : COMPILER_EMAIL;
+
+    const titleSnippet = (title && title.trim() !== '') ? `, ${escapeHTML(title.trim())}` : '';
+    compilerLine.innerHTML = `Съставител: ${escapeHTML(name)}${titleSnippet} · <a href="mailto:${escapeHTML(email)}" style="color: inherit; text-decoration: underline;">${escapeHTML(email)}</a>`;
+}
+
+function setBrand(brandKey, saveToDraft = true, animateCharts = true) {
+    if (typeof BRANDS === 'undefined' || !BRANDS[brandKey]) brandKey = 'akpb';
+    currentBrand = brandKey;
+    document.body.setAttribute('data-brand', brandKey);
+
+    document.querySelectorAll('.brand-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.brand === brandKey);
+    });
+
+    const b = BRANDS[brandKey];
+    renderBrandElements(b);
+    renderCompilerLine();
+    if (parsedData && parsedData.length > 0) {
+        renderCharts(parsedData, animateCharts);
+    }
+
+    if (saveToDraft) debounceSaveDraft();
+}
+
+function renderBrandElements(b) {
+    if (!b) return;
+    const logoP1 = document.getElementById('brandHeaderLogoP1');
+    if (logoP1) {
+        logoP1.innerHTML = `${b.logoHtml}<div class="pdf-brand-text"><h1>${escapeHTML(b.headerTitle)}</h1><p>${escapeHTML(b.headerSubtitle)}</p></div>`;
+    }
+    const titleP1 = document.getElementById('brandDocTitleP1');
+    if (titleP1) titleP1.innerText = b.docTitle;
+
+    const logoP2 = document.getElementById('brandHeaderLogoP2');
+    if (logoP2) {
+        logoP2.innerHTML = `${b.logoHtml}<div class="pdf-brand-text"><h1 style="font-size: 13px;">${escapeHTML(b.headerTitle)}</h1><p style="font-size: 10px;">${escapeHTML(b.headerSubtitle)}</p></div>`;
+    }
+
+    const footerP1 = document.getElementById('brandFooterP1');
+    if (footerP1) {
+        footerP1.innerHTML = `<span>${escapeHTML(b.footerTextPage1)}</span><span>Страница 1 от 2</span>`;
+    }
+
+    const footerP2 = document.getElementById('brandFooterP2');
+    if (footerP2) {
+        footerP2.innerHTML = `${b.footerInfoPage2}<span>Страница 2 от 2</span>`;
+    }
+
+    const disclaimer = document.getElementById('brandDisclaimer');
+    if (disclaimer) {
+        disclaimer.innerText = b.disclaimer;
+    }
 }
 
 function setupSectionSelection() {
@@ -777,9 +840,22 @@ function setupEventListeners() {
         });
     }
 
+    // Brand selector buttons
+    document.querySelectorAll('.brand-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const brandKey = btn.dataset.brand;
+            if (brandKey) setBrand(brandKey);
+        });
+    });
+
     // PDF generation
     if (btnGeneratePDF) {
-        btnGeneratePDF.addEventListener('click', generatePDF);
+        btnGeneratePDF.addEventListener('click', () => generatePDF());
+    }
+
+    const btnExportBothPDF = document.getElementById('btnExportBothPDF');
+    if (btnExportBothPDF) {
+        btnExportBothPDF.addEventListener('click', generateBothPDFs);
     }
 }
 
@@ -1218,8 +1294,8 @@ function updateStatsAndCharts() {
     renderCharts(parsedData);
 }
 
-// Render dynamic multiple charts
-function renderCharts(data) {
+// // Render dynamic multiple charts
+function renderCharts(data, animate = true) {
     ratesCharts.forEach(c => c.destroy());
     ratesCharts = [];
     chartsContainer.innerHTML = '';
@@ -1230,6 +1306,11 @@ function renderCharts(data) {
         chartsContainer.innerHTML = '<p style="font-size: 10px; color: #6b7280; text-align: center;">Няма избрани графики.</p>';
         return;
     }
+
+    const b = (typeof BRANDS !== 'undefined' && BRANDS[currentBrand]) ? BRANDS[currentBrand] : null;
+    const titleColor = (b && b.palette && b.palette.primary) ? b.palette.primary : '#0b2545';
+    const primaryColor = (b && b.palette && b.palette.primary) ? b.palette.primary : '#0b2545';
+    const bgBarColor = (currentBrand === 'creditera') ? '#3EA93F' : '#10b981';
 
     chartIndicators.forEach(indObj => {
         const wrapper = document.createElement('div');
@@ -1242,7 +1323,7 @@ function renderCharts(data) {
         const title = document.createElement('h3');
         title.style.fontSize = '8.5px';
         title.style.fontFamily = 'Montserrat';
-        title.style.color = '#0b2545';
+        title.style.color = titleColor;
         title.style.marginBottom = '2px';
         title.style.textAlign = 'center';
         title.innerText = `${indObj.name.toUpperCase()} ${indObj.name.includes('лихва') ? '(%)' : ''}`;
@@ -1265,9 +1346,9 @@ function renderCharts(data) {
         const datasetValues = data.map(item => (item[indObj.name] !== undefined ? item[indObj.name] : null));
 
         const backgroundColors = data.map(item => {
-            if (item.Code === 'BG') return '#10b981';
+            if (item.Code === 'BG') return bgBarColor;
             if (item.Code === 'U2') return '#3b82f6';
-            return '#0b2545';
+            return primaryColor;
         });
 
         const chart = new Chart(ctx, {
@@ -1285,6 +1366,7 @@ function renderCharts(data) {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: animate ? {} : false,
                 plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -1318,17 +1400,19 @@ function renderCharts(data) {
 }
 
 // Generate PDF
-function generatePDF() {
+function generatePDF(brandOverride) {
+    const targetBrand = brandOverride || currentBrand;
+    const b = (typeof BRANDS !== 'undefined' && BRANDS[targetBrand]) ? BRANDS[targetBrand] : { pdfPrefix: 'АКПБ_Бюлетин' };
     const element = document.getElementById('bulletinDocument');
     const monthName = inputMonth.value.replace(/\s+/g, '_');
     
     const opt = {
         margin: 0,
-        filename: `АКПБ_Бюлетин_${monthName}.pdf`,
+        filename: `${b.pdfPrefix}_${monthName}.pdf`,
         image: { type: 'jpeg', quality: 1.0 },
         html2canvas: { 
             scale: 2, 
-            useCORS: true,
+            useCORS: true, 
             logging: false,
             letterRendering: true,
             windowWidth: 794,
@@ -1344,11 +1428,36 @@ function generatePDF() {
 
     element.style.boxShadow = 'none';
 
-    html2pdf().from(element).set(opt).save().then(() => {
+    return html2pdf().from(element).set(opt).save().then(() => {
         element.style.boxShadow = 'var(--shadow-lg)';
     }).catch(err => {
+        element.style.boxShadow = 'var(--shadow-lg)';
         console.error(err);
         alert('Грешка при генерирането на PDF.');
-        element.style.boxShadow = 'var(--shadow-lg)';
+        throw err;
     });
+}
+
+// Generate sequential PDFs for both brands
+async function generateBothPDFs() {
+    const initialBrand = currentBrand;
+    const btn = document.getElementById('btnExportBothPDF');
+    if (btn) btn.disabled = true;
+
+    try {
+        // 1. Export AKPB
+        setBrand('akpb', false, false);
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+        await generatePDF('akpb');
+
+        // 2. Export CreditERA
+        setBrand('creditera', false, false);
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+        await generatePDF('creditera');
+    } catch (err) {
+        console.error('Error generating both PDFs:', err);
+    } finally {
+        setBrand(initialBrand, false, true);
+        if (btn) btn.disabled = false;
+    }
 }
