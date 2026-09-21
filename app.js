@@ -569,8 +569,8 @@ function renderIndicatorChart(indKey, countries, isGrowth = false) {
 
     const b = (typeof BRANDS !== 'undefined' && BRANDS[currentBrand]) ? BRANDS[currentBrand] : null;
     const primaryColor = b?.palette?.primary || '#0B2545';
-    const bgBarColor = (currentBrand === 'creditera') ? '#3EA93F' : (b?.palette?.accent || '#EEB902');
-    const u2BarColor = '#DC2626'; // Червено за Еврозоната
+    const bgBarColor = '#3EA93F'; // ВИНАГИ зелено за България (BG) за всички брандове
+    const u2BarColor = '#DC2626'; // ВИНАГИ червено за Еврозоната (U2)
 
     const labels = countries.map(c => c.code);
     const dataValues = countries.map(c => {
