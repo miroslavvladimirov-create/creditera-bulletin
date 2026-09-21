@@ -756,6 +756,88 @@ body {
     text-align: right;
 }
 
+/* CreditERA Brand Cover Page (Page 1) */
+body[data-brand="creditera"] .pdf-page.cover-page {
+    padding: 53mm 24mm 16mm 24mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-top-row {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 210mm;
+    height: 38mm;
+    background: #3EA93F;
+    padding: 0 24mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    border-bottom: 3mm solid #202E64;
+    min-height: 38mm;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-logo-box img {
+    height: 14mm !important;
+    width: auto;
+    max-width: 140px;
+    object-fit: contain;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-meta-right {
+    text-align: right;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-doc-date-caps {
+    font-family: var(--font-heading);
+    font-size: 16pt;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 1px;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-doc-num {
+    font-size: 11pt;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 2px;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-doc-num span {
+    color: #ffffff;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-title-block {
+    margin-top: 0;
+    margin-bottom: 0;
+    min-height: auto;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-toc-block {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-kpi-block {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 10px;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-lead-block {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-bottom-row {
+    margin-top: 0;
+    padding-top: 8px;
+}
+
 /* ========================================================================== */
 /* Page 2 Grid & Market Overview (Collapses naturally)                        */
 /* ========================================================================== */
@@ -956,11 +1038,16 @@ body {
 /* Indicator Chart Container (flex: 1 to fill available vertical space) */
 .indicator-chart-wrapper {
     flex: 1;
-    min-height: var(--chart-height, 130px);
-    max-height: 220px;
+    min-height: 0;
+    max-height: var(--chart-max-height, none);
     position: relative;
     width: 100%;
     margin-bottom: 0;
+}
+
+.indicator-chart-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* Indicator Notes & Warnings (immediately under chart) */

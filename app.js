@@ -902,8 +902,14 @@ function restoreDraft(key) {
         }
         if (draft.sliderChartHeight && sliderChartHeight) {
             sliderChartHeight.value = draft.sliderChartHeight;
-            if (lblChartHeight) lblChartHeight.innerText = `${draft.sliderChartHeight}px`;
-            if (docWrapper) docWrapper.style.setProperty('--chart-height', `${draft.sliderChartHeight}px`);
+            const val = parseInt(draft.sliderChartHeight, 10);
+            if (val >= 300) {
+                if (lblChartHeight) lblChartHeight.innerText = 'Без лимит';
+                if (docWrapper) docWrapper.style.setProperty('--chart-max-height', 'none');
+            } else {
+                if (lblChartHeight) lblChartHeight.innerText = `${val}px`;
+                if (docWrapper) docWrapper.style.setProperty('--chart-max-height', `${val}px`);
+            }
         }
         if (draft.sliderSpacing && sliderSpacing) {
             sliderSpacing.value = draft.sliderSpacing;
@@ -1035,8 +1041,13 @@ function setupEventListeners() {
     if (sliderChartHeight) {
         sliderChartHeight.addEventListener('input', (e) => {
             const val = parseInt(e.target.value, 10);
-            if (lblChartHeight) lblChartHeight.innerText = `${val}px`;
-            if (docWrapper) docWrapper.style.setProperty('--chart-height', `${val}px`);
+            if (val >= 300) {
+                if (lblChartHeight) lblChartHeight.innerText = 'Без лимит';
+                if (docWrapper) docWrapper.style.setProperty('--chart-max-height', 'none');
+            } else {
+                if (lblChartHeight) lblChartHeight.innerText = `${val}px`;
+                if (docWrapper) docWrapper.style.setProperty('--chart-max-height', `${val}px`);
+            }
             debounceSaveDraft();
             checkPagesOverflow();
         });
