@@ -81,7 +81,7 @@ const BRANDS = {
         website: 'www.creditera.bg',
         coverContact: 'CreditERA • Ипотечни и кредитни консултации • www.creditera.bg',
         footerTextPage1: 'CreditERA • Ипотечни и кредитни консултации • www.creditera.bg',
-        footerMini: 'ИПОТЕЧЕН БЮЛЕТИН',
+        footerMini: 'CREDITERA',
         disclaimer: 'Отказ от отговорност: Представените данни имат информативен характер и отразяват официалната статистика на ЕЦБ и БНБ към момента на съставяне на бюлетина. CreditERA не носи отговорност за промени в тарифите на банковите институции.',
         compiler: {
             name: 'гл. ас. д-р Мирослав Владимиров',

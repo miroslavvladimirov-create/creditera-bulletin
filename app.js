@@ -467,58 +467,56 @@ function renderIndicatorPage(indCfg, jsonData) {
             tr.appendChild(tdD);
         });
 
-        // Cols 7-9 on Page 3 (rate): Spread (б.т.), sd24, z24
-        if (indKey === 'rate') {
-            // Col 7: spread_bps (integer in б.т.)
-            const tdSpread = document.createElement('td');
-            tdSpread.contentEditable = true;
-            tdSpread.dataset.country = code;
-            tdSpread.dataset.indicator = indKey;
-            tdSpread.dataset.col = 'spread_bps';
+        // Cols 7-9 (All Indicator Pages): Spread (б.т.), sd24, z24
+        // Col 7: spread_bps (integer in б.т.)
+        const tdSpread = document.createElement('td');
+        tdSpread.contentEditable = true;
+        tdSpread.dataset.country = code;
+        tdSpread.dataset.indicator = indKey;
+        tdSpread.dataset.col = 'spread_bps';
 
-            if (indData.spread_bps === null || indData.spread_bps === undefined) {
-                tdSpread.innerText = 'н/д';
-                tdSpread.style.color = '#94a3b8';
-            } else {
-                const spreadVal = Math.round(Number(indData.spread_bps));
-                tdSpread.innerText = `${spreadVal > 0 ? '+' : ''}${spreadVal} б.т.`;
-            }
-            attachCellEditHandler(tdSpread, indData, 'spread_bps');
-            tr.appendChild(tdSpread);
-
-            // Col 8: sd24 (2 decimals)
-            const tdSd = document.createElement('td');
-            tdSd.contentEditable = true;
-            tdSd.dataset.country = code;
-            tdSd.dataset.indicator = indKey;
-            tdSd.dataset.col = 'sd24';
-
-            if (indData.sd24 === null || indData.sd24 === undefined) {
-                tdSd.innerText = 'н/д';
-                tdSd.style.color = '#94a3b8';
-            } else {
-                tdSd.innerText = Number(indData.sd24).toFixed(2);
-            }
-            attachCellEditHandler(tdSd, indData, 'sd24');
-            tr.appendChild(tdSd);
-
-            // Col 9: z24 (2 decimals)
-            const tdZ = document.createElement('td');
-            tdZ.contentEditable = true;
-            tdZ.dataset.country = code;
-            tdZ.dataset.indicator = indKey;
-            tdZ.dataset.col = 'z24';
-
-            if (indData.z24 === null || indData.z24 === undefined) {
-                tdZ.innerText = 'н/д';
-                tdZ.style.color = '#94a3b8';
-            } else {
-                const zVal = Number(indData.z24);
-                tdZ.innerText = `${zVal > 0 ? '+' : ''}${zVal.toFixed(2)}`;
-            }
-            attachCellEditHandler(tdZ, indData, 'z24');
-            tr.appendChild(tdZ);
+        if (indData.spread_bps === null || indData.spread_bps === undefined) {
+            tdSpread.innerText = 'н/д';
+            tdSpread.style.color = '#94a3b8';
+        } else {
+            const spreadVal = Math.round(Number(indData.spread_bps));
+            tdSpread.innerText = `${spreadVal > 0 ? '+' : ''}${spreadVal} б.т.`;
         }
+        attachCellEditHandler(tdSpread, indData, 'spread_bps');
+        tr.appendChild(tdSpread);
+
+        // Col 8: sd24 (2 decimals)
+        const tdSd = document.createElement('td');
+        tdSd.contentEditable = true;
+        tdSd.dataset.country = code;
+        tdSd.dataset.indicator = indKey;
+        tdSd.dataset.col = 'sd24';
+
+        if (indData.sd24 === null || indData.sd24 === undefined) {
+            tdSd.innerText = 'н/д';
+            tdSd.style.color = '#94a3b8';
+        } else {
+            tdSd.innerText = Number(indData.sd24).toFixed(2);
+        }
+        attachCellEditHandler(tdSd, indData, 'sd24');
+        tr.appendChild(tdSd);
+
+        // Col 9: z24 (2 decimals)
+        const tdZ = document.createElement('td');
+        tdZ.contentEditable = true;
+        tdZ.dataset.country = code;
+        tdZ.dataset.indicator = indKey;
+        tdZ.dataset.col = 'z24';
+
+        if (indData.z24 === null || indData.z24 === undefined) {
+            tdZ.innerText = 'н/д';
+            tdZ.style.color = '#94a3b8';
+        } else {
+            const zVal = Number(indData.z24);
+            tdZ.innerText = `${zVal > 0 ? '+' : ''}${zVal.toFixed(2)}`;
+        }
+        attachCellEditHandler(tdZ, indData, 'z24');
+        tr.appendChild(tdZ);
 
         tbody.appendChild(tr);
     });
