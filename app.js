@@ -1,5 +1,5 @@
 // ==========================================================================
-// АКПБ / CreditERA - Месечен Ипотечен Бюлетин (8 страници A4)
+// АКПБ / CreditERA - Месечен Ипотечен Бюлетин (9 страници A4)
 // ==========================================================================
 
 // Constants
@@ -56,41 +56,41 @@ const monthNamesBG = [
     'юли', 'август', 'септември', 'октомври', 'ноември', 'декември'
 ];
 
-// Sequence of 7 indicator pages (Pages 2 to 8)
+// Sequence of 7 indicator pages (Pages 3 to 9)
 const INDICATOR_SEQUENCE = [
     {
         key: 'rate',
-        pageNum: 2,
+        pageNum: 3,
         defaultCommentary: 'Средната цена на новите жилищни кредити (Cost of Borrowing) отразява реално договорените лихвени проценти по всички видове новоотпуснати ипотечни заеми за домакинства.'
     },
     {
         key: 'fix_f',
-        pageNum: 3,
+        pageNum: 4,
         defaultCommentary: 'Лихвени проценти по нови жилищни кредити с плаваща лихва или първоначално фиксиран период до 1 година. В България този сегмент формира преобладаващата част от пазара.'
     },
     {
         key: 'fix_i',
-        pageNum: 4,
+        pageNum: 5,
         defaultCommentary: 'Лихвени проценти по нови жилищни заеми с първоначално фиксиране между 1 и 5 години, предоставящи средносрочна сигурност на месечната вноска.'
     },
     {
         key: 'fix_o',
-        pageNum: 5,
+        pageNum: 6,
         defaultCommentary: 'Лихвени проценти по нови жилищни кредити с първоначален период на фиксиране между 5 и 10 години.'
     },
     {
         key: 'fix_p',
-        pageNum: 6,
+        pageNum: 7,
         defaultCommentary: 'Дългосрочно фиксирани лихвени проценти за период над 10 години, типични за пазари като Франция, Германия, Белгия и Нидерландия.'
     },
     {
         key: 'loan_growth_yoy',
-        pageNum: 7,
+        pageNum: 8,
         defaultCommentary: 'Годишен темп на прираст на общата наличност (салда) по жилищни кредити за домакинства, коригиран за прекласификации и трансакции (BSI статистика).'
     },
     {
         key: 'rate_outstanding',
-        pageNum: 8,
+        pageNum: 9,
         defaultCommentary: 'Среднопретеглен лихвен процент по цялата съществуваща наличност (салда) от жилищни заеми, отразяващ реалната тежест върху обслужваните от домакинствата кредити.'
     }
 ];
@@ -125,6 +125,32 @@ function formatPeriodToMonthYear(periodStr) {
         }
     }
     return periodStr;
+}
+
+function formatPeriodToMonthYearCaps(periodStr) {
+    if (!periodStr) return '';
+    const parts = periodStr.toString().split('-');
+    if (parts.length >= 2) {
+        const year = parts[0];
+        const monthIdx = parseInt(parts[1], 10) - 1;
+        if (monthIdx >= 0 && monthIdx < 12) {
+            return `${monthNamesBG[monthIdx].toUpperCase()} ${year}`;
+        }
+    }
+    return periodStr.toUpperCase();
+}
+
+function formatPeriodToLastDay(periodStr) {
+    if (!periodStr) return '';
+    const parts = periodStr.toString().split('-');
+    if (parts.length >= 2) {
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10);
+        const lastDay = new Date(year, month, 0).getDate();
+        const padMonth = String(month).padStart(2, '0');
+        return `Данни към ${lastDay}.${padMonth}.${year} г.`;
+    }
+    return `Данни към ${periodStr}`;
 }
 
 function formatDelta(d1m) {
@@ -179,21 +205,24 @@ function renderBulletinDocument(jsonData, isRestoringDraft = false) {
         lblDocMonths.forEach(el => el.innerText = formattedMY);
     }
 
-    // 2. Render Page 1
-    renderPage1(jsonData);
+    // 2. Render Page 1 (Cover Page)
+    renderCoverPage(jsonData);
 
-    // 3. Render Pages 2 to 8
+    // 3. Render Page 2 (Market Overview & Benchmarks)
+    renderPage2(jsonData);
+
+    // 4. Render Pages 3 to 9 (7 Indicators)
     INDICATOR_SEQUENCE.forEach(indCfg => {
         renderIndicatorPage(indCfg, jsonData);
     });
 
-    // 4. Render Page 8 Compiler & Disclaimer
+    // 5. Render Page 9 Compiler & Disclaimer
     renderCompilerAndDisclaimer();
 
-    // 5. Update brand visuals on all 8 pages
+    // 6. Update brand visuals on all 9 pages
     updateBrandVisuals();
 
-    // 6. Check overflow across all 8 pages
+    // 7. Check overflow across all 9 pages
     requestAnimationFrame(() => {
         checkPagesOverflow();
     });
@@ -204,9 +233,75 @@ function renderBulletinDocument(jsonData, isRestoringDraft = false) {
 }
 
 // --------------------------------------------------------------------------
-// Page 1: Overview, ECB Cards, Benchmark Cards
+// Page 1: Cover Page
 // --------------------------------------------------------------------------
-function renderPage1(jsonData) {
+function renderCoverPage(jsonData) {
+    const b = (typeof BRANDS !== 'undefined' && BRANDS[currentBrand]) ? BRANDS[currentBrand] : null;
+    const periodStr = jsonData.meta?.period || '';
+    const formattedMY = formatPeriodToMonthYear(periodStr);
+    const formattedMYCaps = formatPeriodToMonthYearCaps(periodStr);
+    const lastDateStr = formatPeriodToLastDay(periodStr);
+
+    // 1. Top row
+    const coverDocDateCaps = document.getElementById('coverDocDateCaps');
+    if (coverDocDateCaps) coverDocDateCaps.innerText = formattedMYCaps;
+
+    // 2. Titles & Subtitles
+    const coverMainTitle = document.getElementById('coverMainTitle');
+    if (coverMainTitle && b?.coverTitle) coverMainTitle.innerHTML = b.coverTitle;
+
+    const coverSubtitle = document.getElementById('coverSubtitle');
+    if (coverSubtitle && b?.coverSubtitle) coverSubtitle.innerText = b.coverSubtitle;
+
+    // 3. 3 Key Indicators for BG
+    const countries = jsonData.data?.countries || [];
+    const bg = countries.find(c => c.code === 'BG') || {};
+    const bgRate = bg.indicators?.rate?.value;
+    const bgSpread = bg.indicators?.rate?.spread_bps;
+    const bgGrowth = bg.indicators?.loan_growth_yoy?.value;
+
+    const kpiRateEl = document.getElementById('coverKpiRate');
+    if (kpiRateEl) {
+        kpiRateEl.innerText = (bgRate !== null && bgRate !== undefined) ? `${bgRate.toFixed(2)} %` : 'н/д';
+    }
+
+    const kpiSpreadEl = document.getElementById('coverKpiSpread');
+    if (kpiSpreadEl) {
+        if (bgSpread !== null && bgSpread !== undefined) {
+            const sVal = Math.round(Number(bgSpread));
+            kpiSpreadEl.innerText = `${sVal > 0 ? '+' : ''}${sVal} б.т.`;
+        } else {
+            kpiSpreadEl.innerText = 'н/д';
+        }
+    }
+
+    const kpiGrowthEl = document.getElementById('coverKpiGrowth');
+    if (kpiGrowthEl) {
+        if (bgGrowth !== null && bgGrowth !== undefined) {
+            const gVal = Number(bgGrowth);
+            kpiGrowthEl.innerText = `${gVal > 0 ? '+' : ''}${gVal.toFixed(2)} %`;
+        } else {
+            kpiGrowthEl.innerText = 'н/д';
+        }
+    }
+
+    // Period subtitles on cover KPI
+    document.querySelectorAll('.lblKpiPeriodSub').forEach(el => {
+        el.innerText = `данни за ${formattedMY}`;
+    });
+
+    // 4. Bottom row
+    const coverDataDate = document.getElementById('coverDataDate');
+    if (coverDataDate) coverDataDate.innerText = lastDateStr;
+
+    const coverContactText = document.getElementById('coverContactText');
+    if (coverContactText && b?.coverContact) coverContactText.innerText = b.coverContact;
+}
+
+// --------------------------------------------------------------------------
+// Page 2: Overview, ECB Cards, Benchmark Cards
+// --------------------------------------------------------------------------
+function renderPage2(jsonData) {
     const ecb = jsonData.data?.ecb || {};
     const benchmarks = jsonData.data?.benchmarks || {};
 
@@ -259,7 +354,7 @@ function renderPage1(jsonData) {
 }
 
 // --------------------------------------------------------------------------
-// Indicator Page Renderer (Pages 2 to 8)
+// Indicator Page Renderer (Pages 3 to 9)
 // --------------------------------------------------------------------------
 function renderIndicatorPage(indCfg, jsonData) {
     const indKey = indCfg.key;
@@ -284,6 +379,7 @@ function renderIndicatorPage(indCfg, jsonData) {
 
     const countries = jsonData.data?.countries || [];
     let hasLowVolume = false;
+    let bgHistorySource = null;
 
     countries.forEach(c => {
         const code = c.code;
@@ -299,16 +395,20 @@ function renderIndicatorPage(indCfg, jsonData) {
         if (flag === 'low_volume') {
             hasLowVolume = true;
         }
+        if (code === 'BG' && indData.history_source) {
+            bgHistorySource = indData.history_source;
+        }
 
         const tr = document.createElement('tr');
         if (code === 'BG' || code === 'U2') {
             tr.className = 'highlight-row';
         }
 
-        // Col 1: Country Name
+        // Col 1: Country Name (with BG* on Page 3)
         const tdCountry = document.createElement('td');
-        const codeSuffix = (code === 'BG' && indData.history_source) ? ' (BG)' : ` (${code})`;
-        tdCountry.innerHTML = `<strong>${escapeHTML(name)}</strong><span style="font-size: 7px; color: #64748b; margin-left: 3px;">${code}</span>`;
+        const isBgWithStar = (indKey === 'rate' && code === 'BG' && bgHistorySource);
+        const codeDisplay = isBgWithStar ? 'BG*' : code;
+        tdCountry.innerHTML = `<strong>${escapeHTML(name)}</strong><span style="font-size: 7px; color: #64748b; margin-left: 3px;">${codeDisplay}</span>`;
         tr.appendChild(tdCountry);
 
         // Col 2: Value
@@ -367,6 +467,59 @@ function renderIndicatorPage(indCfg, jsonData) {
             tr.appendChild(tdD);
         });
 
+        // Cols 7-9 on Page 3 (rate): Spread (б.т.), sd24, z24
+        if (indKey === 'rate') {
+            // Col 7: spread_bps (integer in б.т.)
+            const tdSpread = document.createElement('td');
+            tdSpread.contentEditable = true;
+            tdSpread.dataset.country = code;
+            tdSpread.dataset.indicator = indKey;
+            tdSpread.dataset.col = 'spread_bps';
+
+            if (indData.spread_bps === null || indData.spread_bps === undefined) {
+                tdSpread.innerText = 'н/д';
+                tdSpread.style.color = '#94a3b8';
+            } else {
+                const spreadVal = Math.round(Number(indData.spread_bps));
+                tdSpread.innerText = `${spreadVal > 0 ? '+' : ''}${spreadVal} б.т.`;
+            }
+            attachCellEditHandler(tdSpread, indData, 'spread_bps');
+            tr.appendChild(tdSpread);
+
+            // Col 8: sd24 (2 decimals)
+            const tdSd = document.createElement('td');
+            tdSd.contentEditable = true;
+            tdSd.dataset.country = code;
+            tdSd.dataset.indicator = indKey;
+            tdSd.dataset.col = 'sd24';
+
+            if (indData.sd24 === null || indData.sd24 === undefined) {
+                tdSd.innerText = 'н/д';
+                tdSd.style.color = '#94a3b8';
+            } else {
+                tdSd.innerText = Number(indData.sd24).toFixed(2);
+            }
+            attachCellEditHandler(tdSd, indData, 'sd24');
+            tr.appendChild(tdSd);
+
+            // Col 9: z24 (2 decimals)
+            const tdZ = document.createElement('td');
+            tdZ.contentEditable = true;
+            tdZ.dataset.country = code;
+            tdZ.dataset.indicator = indKey;
+            tdZ.dataset.col = 'z24';
+
+            if (indData.z24 === null || indData.z24 === undefined) {
+                tdZ.innerText = 'н/д';
+                tdZ.style.color = '#94a3b8';
+            } else {
+                const zVal = Number(indData.z24);
+                tdZ.innerText = `${zVal > 0 ? '+' : ''}${zVal.toFixed(2)}`;
+            }
+            attachCellEditHandler(tdZ, indData, 'z24');
+            tr.appendChild(tdZ);
+        }
+
         tbody.appendChild(tr);
     });
 
@@ -392,7 +545,15 @@ function renderIndicatorPage(indCfg, jsonData) {
     }
 
     if (footnoteEl) {
-        footnoteEl.style.display = hasLowVolume ? 'block' : 'none';
+        if (indKey === 'rate' && bgHistorySource) {
+            footnoteEl.innerText = `* BG: ${bgHistorySource}.`;
+            footnoteEl.style.display = 'block';
+        } else if (hasLowVolume) {
+            footnoteEl.innerText = '* Сегменти с ограничен обем на нов бизнес могат да показват нетипични стойности.';
+            footnoteEl.style.display = 'block';
+        } else {
+            footnoteEl.style.display = 'none';
+        }
     }
 }
 
@@ -434,50 +595,46 @@ function renderIndicatorChart(indKey, countries, isGrowth = false) {
             datasets: [{
                 data: dataValues,
                 backgroundColor: backgroundColors,
-                borderRadius: 2.5,
-                borderWidth: 0,
-                maxBarThickness: 16
+                borderRadius: 2,
+                barPercentage: 0.8,
+                categoryPercentage: 0.85
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 250 },
+            animation: false,
             plugins: {
                 legend: { display: false },
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
-                            const index = context.dataIndex;
-                            const cObj = countries[index];
-                            const val = context.raw;
-                            if (val === null || val === undefined) return `${cObj.name_bg}: н/д`;
-                            return `${cObj.name_bg}: ${val.toFixed(2)} %`;
+                        label: (ctx) => {
+                            const val = ctx.raw;
+                            if (val === null) return 'Липсват данни';
+                            return `${val.toFixed(2)} %`;
                         }
                     }
                 }
             },
             scales: {
-                y: {
-                    beginAtZero: false,
+                x: {
+                    grid: { display: false },
                     ticks: {
-                        font: { family: 'Inter', size: 7.5 },
+                        font: { size: 8, family: 'Inter, sans-serif', weight: '600' },
+                        color: (ctx) => {
+                            const label = ctx.tick?.label;
+                            if (label === 'BG') return accentColor;
+                            return '#64748b';
+                        }
+                    }
+                },
+                y: {
+                    grid: { color: 'rgba(226, 232, 240, 0.8)' },
+                    ticks: {
+                        font: { size: 7.5, family: 'Inter, sans-serif' },
                         color: '#64748b',
                         callback: (v) => `${v}%`
-                    },
-                    grid: { color: '#f1f5f9' }
-                },
-                x: {
-                    ticks: {
-                        font: { family: 'Montserrat', size: 7.5, weight: '700' },
-                        color: (ctx) => {
-                            const code = labels[ctx.index];
-                            if (code === 'BG') return bgBarColor;
-                            if (code === 'U2') return u2BarColor;
-                            return '#475569';
-                        }
-                    },
-                    grid: { display: false }
+                    }
                 }
             }
         }
@@ -496,7 +653,7 @@ function attachCellEditHandler(tdEl, dataObj, propKey) {
 
         let parsedVal = null;
         if (text !== 'н/д' && text !== '--' && text !== '') {
-            const cleanStr = text.replace(/,/g, '.').replace(/%/g, '').replace(/п\.п\./g, '').replace(/\*/g, '').trim();
+            const cleanStr = text.replace(/,/g, '.').replace(/%/g, '').replace(/п\.п\./g, '').replace(/б\.т\./g, '').replace(/\*/g, '').trim();
             const num = parseFloat(cleanStr);
             if (!isNaN(num)) parsedVal = num;
         }
@@ -515,7 +672,7 @@ function attachCellEditHandler(tdEl, dataObj, propKey) {
 }
 
 // --------------------------------------------------------------------------
-// Page 8: Compiler & Disclaimer
+// Page 9: Compiler & Disclaimer
 // --------------------------------------------------------------------------
 function renderCompilerAndDisclaimer() {
     const b = (typeof BRANDS !== 'undefined' && BRANDS[currentBrand]) ? BRANDS[currentBrand] : null;
@@ -542,31 +699,41 @@ function updateBrandVisuals() {
     // Apply data-brand to body
     document.body.setAttribute('data-brand', currentBrand);
 
-    // 1. Page 1 Full Header Logo & Doc Title
-    const logoP1 = document.getElementById('brandHeaderLogoP1');
-    if (logoP1) logoP1.innerHTML = b.logoHtml;
+    // 1. Cover Page Logo, Titles, Contacts
+    const coverLogo = document.getElementById('coverLogo');
+    if (coverLogo) coverLogo.innerHTML = b.coverLogoHtml || b.logoHtml;
 
-    const titleP1 = document.getElementById('brandDocTitleP1');
-    if (titleP1) titleP1.innerText = b.docTitle;
+    const coverMainTitle = document.getElementById('coverMainTitle');
+    if (coverMainTitle && b.coverTitle) coverMainTitle.innerHTML = b.coverTitle;
 
-    const footerP1 = document.getElementById('brandFooterP1');
-    if (footerP1) footerP1.innerHTML = `<span>${b.footerTextPage1}</span>`;
+    const coverSubtitle = document.getElementById('coverSubtitle');
+    if (coverSubtitle && b.coverSubtitle) coverSubtitle.innerText = b.coverSubtitle;
 
-    // 2. Pages 2 to 8 Mini Headers & Footers
-    for (let p = 2; p <= 8; p++) {
+    const coverContactText = document.getElementById('coverContactText');
+    if (coverContactText && b.coverContact) coverContactText.innerText = b.coverContact;
+
+    // 2. Pages 2 to 9 Mini Headers & Footers
+    for (let p = 2; p <= 9; p++) {
         const miniLogo = document.getElementById(`brandMiniLogoP${p}`);
         if (miniLogo) miniLogo.innerHTML = b.miniLogoHtml || b.logoHtml;
 
         const miniFooter = document.getElementById(`brandFooterP${p}`);
-        if (miniFooter) miniFooter.innerHTML = `<span>${b.footerMini || b.footerTextPage1}</span>`;
+        if (miniFooter) {
+            miniFooter.innerText = b.footerMini || b.footerTextPage1;
+        }
     }
 
-    // Mini doc titles
+    // Mini doc titles across pages 2 to 9
     document.querySelectorAll('.brandDocTitleMini').forEach(el => {
         el.innerText = b.docTitle;
     });
 
-    // 3. Page 8 Compiler & Disclaimer
+    // Slogans in footers
+    document.querySelectorAll('.brand-footer-slogan').forEach(el => {
+        el.innerText = b.slogan || '';
+    });
+
+    // 3. Page 9 Compiler & Disclaimer
     renderCompilerAndDisclaimer();
 
     // 4. Update brand buttons state
@@ -617,7 +784,10 @@ function checkPagesOverflow() {
             overflowList.innerHTML = '';
         }
     }
+
+    return overflowingPages;
 }
+window.checkPagesOverflow = checkPagesOverflow;
 
 // ==========================================================================
 // Draft Persistence (localStorage)
@@ -637,12 +807,15 @@ function saveDraft() {
         if (el) commentaries[indCfg.key] = el.innerHTML;
     });
 
+    const coverTocList = document.getElementById('coverTocList');
+
     const draftData = {
         savedAt: new Date().toISOString(),
         brand: currentBrand,
         inputNum: inputNum ? inputNum.value : '',
         inputMonth: inputMonth ? inputMonth.value : '',
         inputAuthor: inputAuthor ? inputAuthor.value : '',
+        coverTocHtml: coverTocList ? coverTocList.innerHTML : '',
         summaryText: inputText ? inputText.value : '',
         lblSummaryHtml: lblSummaryText ? lblSummaryText.innerHTML : '',
         commentaries: commentaries,
@@ -696,11 +869,17 @@ function restoreDraft(key) {
         }
         if (draft.inputAuthor && inputAuthor) inputAuthor.value = draft.inputAuthor;
 
-        // 3. Summary on Page 1
+        // 3. Cover TOC
+        const coverTocList = document.getElementById('coverTocList');
+        if (draft.coverTocHtml && coverTocList) {
+            coverTocList.innerHTML = draft.coverTocHtml;
+        }
+
+        // 4. Summary on Page 2
         if (draft.summaryText && inputText) inputText.value = draft.summaryText;
         if (draft.lblSummaryHtml && lblSummaryText) lblSummaryText.innerHTML = draft.lblSummaryHtml;
 
-        // 4. Indicator commentaries
+        // 5. Indicator commentaries
         if (draft.commentaries) {
             Object.keys(draft.commentaries).forEach(indKey => {
                 const el = document.getElementById(`commentary-${indKey}`);
@@ -708,7 +887,7 @@ function restoreDraft(key) {
             });
         }
 
-        // 5. Sliders
+        // 6. Sliders
         const docWrapper = document.getElementById('bulletinDocument');
         if (draft.sliderTableFont && sliderTableFont) {
             sliderTableFont.value = draft.sliderTableFont;
@@ -726,7 +905,7 @@ function restoreDraft(key) {
             if (docWrapper) docWrapper.style.setProperty('--section-spacing', `${draft.sliderSpacing}px`);
         }
 
-        // 6. Edited cells
+        // 7. Edited cells
         if (draft.editedCells) {
             editedCells = { ...draft.editedCells };
             Object.keys(editedCells).forEach(cellKey => {
@@ -739,6 +918,10 @@ function restoreDraft(key) {
                         targetTd.style.color = '#94a3b8';
                     } else if (colKey === 'value') {
                         targetTd.innerText = `${editedVal.toFixed(2)} %`;
+                    } else if (colKey === 'spread_bps') {
+                        targetTd.innerText = `${editedVal > 0 ? '+' : ''}${Math.round(editedVal)} б.т.`;
+                    } else if (colKey === 'sd24' || colKey === 'z24') {
+                        targetTd.innerText = `${editedVal > 0 && colKey === 'z24' ? '+' : ''}${editedVal.toFixed(2)}`;
                     } else {
                         targetTd.innerText = (editedVal > 0 ? `+${editedVal.toFixed(2)}` : editedVal.toFixed(2)) + ' п.п.';
                     }
@@ -784,6 +967,15 @@ function setupEventListeners() {
         inputMonth.addEventListener('input', (e) => {
             lblDocMonths.forEach(el => el.innerText = e.target.value);
             debounceSaveDraft();
+        });
+    }
+
+    // Cover TOC inline edit
+    const coverTocList = document.getElementById('coverTocList');
+    if (coverTocList) {
+        coverTocList.addEventListener('blur', () => {
+            debounceSaveDraft();
+            checkPagesOverflow();
         });
     }
 
@@ -919,14 +1111,14 @@ function handleUploadedFile(file) {
         reader.readAsText(file);
     } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xlsm')) {
         if (dataSourceText) {
-            dataSourceText.innerHTML = `Източник: ${file.name} <span style="color: #f59e0b; font-weight: 700;">(Legacy - само Стр. 2)</span>`;
+            dataSourceText.innerHTML = `Източник: ${file.name} <span style="color: #f59e0b; font-weight: 700;">(Legacy - само Стр. 3)</span>`;
         }
-        alert('Забележка: Зареждането от Excel поддържа само показател rate (Стр. 2). Препоръчва се използването на bulletin_data.json за всички 8 страници.');
+        alert('Забележка: Зареждането от Excel поддържа само показател rate (Стр. 3). Препоръчва се използването на bulletin_data.json за всички 9 страници.');
     }
 }
 
 // --------------------------------------------------------------------------
-// PDF Export (Guarantees exactly 8 A4 pages without blank/trailing pages)
+// PDF Export (Guarantees exactly 9 A4 pages without blank/trailing pages)
 // --------------------------------------------------------------------------
 async function generatePDF(brandOverride) {
     const targetBrand = brandOverride || currentBrand;
