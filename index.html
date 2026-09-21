@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>АКПБ - Генератор на Месечен Бюлетин</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons (CDN) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css?v=15">
+    <!-- CDNs for Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Control Panel -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-wrapper">
+                    <!-- Stylized SVG Logo of ACIB / АКПБ -->
+                    <svg viewBox="0 0 100 100" class="acb-logo-svg">
+                        <path d="M20,80 L20,40 L50,15 L80,40 L80,80 Z" fill="none" stroke="currentColor" stroke-width="4"/>
+                        <path d="M35,80 L35,50 L65,50 L65,80" fill="none" stroke="currentColor" stroke-width="4"/>
+                        <path d="M50,15 L50,80" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4"/>
+                        <circle cx="50" cy="50" r="8" fill="var(--color-gold)"/>
+                    </svg>
+                    <div class="logo-text-inline">
+                        <h2>АКПБ</h2>
+                        <span>•</span>
+                        <p>Контролен панел</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-content">
+                <!-- Step 1: Upload Excel / JSON -->
+                <div class="control-section">
+                    <h3><i data-lucide="file-spreadsheet"></i> 1. Данни (JSON / Excel)</h3>
+                    <div class="upload-zone" id="dropZone">
+                        <i data-lucide="upload-cloud" class="upload-icon"></i>
+                        <p>Провлечете JSON или Excel файл тук или кликнете за избор</p>
+                        <span class="file-spec">bulletin_data.json или MAP2_final.xlsx</span>
+                        <input type="file" id="excelFile" accept=".xlsx,.xlsm,.json" style="display: none;">
+                    </div>
+                    <div id="fileStatus" class="file-status hidden">
+                        <i data-lucide="check-circle" class="text-success"></i>
+                        <span id="fileName">Файлът е зареден</span>
+                    </div>
+                    <div id="dataSourceBadge" style="margin-top: 8px; font-size: 11px; color: var(--color-text-muted); display: flex; align-items: center; gap: 5px;">
+                        <i data-lucide="database" style="width: 13px; height: 13px;"></i>
+                        <span id="dataSourceText">Зареждане на данни...</span>
+                    </div>
+                </div>
+
+                <!-- Step 2: Metadata Configuration -->
+                <div class="control-section">
+                    <h3><i data-lucide="settings"></i> 2. Параметри на бюлетина</h3>
+                    <div class="form-group">
+                        <label for="bulletinNum">Бюлетин №</label>
+                        <input type="text" id="bulletinNum" value="06 / 2026">
+                    </div>
+                    <div class="form-group">
+                        <label for="bulletinMonth">Месец и Година</label>
+                        <input type="text" id="bulletinMonth" value="Юни 2026 г.">
+                    </div>
+                    <div class="form-group">
+                        <label for="bulletinAuthor">Изготвил</label>
+                        <input type="text" id="bulletinAuthor" value="АКПБ (Асоциация на кредитните посредници в България)">
+                    </div>
+                </div>
+
+                <!-- Step 2.5: Interactive Table Actions -->
+                <div class="control-section">
+                    <h3><i data-lucide="edit-3"></i> 2.5. Управление на таблицата</h3>
+                    <button class="btn btn-secondary btn-full" id="btnAddHeader" style="margin-top: 8px;">
+                        <i data-lucide="heading"></i> Добави заглавен ред (разделител)
+                    </button>
+                    <button class="btn btn-secondary btn-full" id="btnAddIndicator" style="margin-top: 8px;">
+                        <i data-lucide="plus-circle"></i> Добави нов показател (ред)
+                    </button>
+                </div>
+
+                <!-- Step 2.8: Page Layout Calibration Slider (NEW) -->
+                <div class="control-section">
+                    <h3><i data-lucide="sliders"></i> 2.8. Напасване на А4 страници</h3>
+                    <div class="form-group">
+                        <label for="sliderTableFont" style="display: flex; justify-content: space-between;">
+                            <span>Шрифт на таблицата:</span>
+                            <span id="lblTableFont" style="font-weight: 600; color: var(--color-gold);">8.0px</span>
+                        </label>
+                        <input type="range" id="sliderTableFont" min="6.0" max="11.0" step="0.5" value="8.0" style="accent-color: var(--color-gold);">
+                    </div>
+                    <div class="form-group" style="margin-top: 8px;">
+                        <label for="sliderChartHeight" style="display: flex; justify-content: space-between;">
+                            <span>Височина на графиката:</span>
+                            <span id="lblChartHeight" style="font-weight: 600; color: var(--color-gold);">160px</span>
+                        </label>
+                        <input type="range" id="sliderChartHeight" min="100" max="220" step="10" value="160" style="accent-color: var(--color-gold);">
+                    </div>
+                    <div class="form-group" style="margin-top: 8px;">
+                        <label for="sliderSpacing" style="display: flex; justify-content: space-between;">
+                            <span>Отстояния (разредител):</span>
+                            <span id="lblSpacing" style="font-weight: 600; color: var(--color-gold);">20px</span>
+                        </label>
+                        <input type="range" id="sliderSpacing" min="10" max="30" step="2" value="20" style="accent-color: var(--color-gold);">
+                    </div>
+                </div>
+
+                <!-- Step 3: Commentary Editor -->
+                <div class="control-section">
+                    <h3><i data-lucide="align-left"></i> 3. Пазарен обзор и коментар</h3>
+                    <div class="form-group">
+                        <label for="summaryText">Месечен анализ (Основен текст)</label>
+                        <textarea id="summaryText" rows="6" placeholder="Въведете вашия коментар тук...">През изминалия месец се наблюдава стабилност в нивата на ипотечните лихви в България, подкрепена от високата ликвидност на банковия сектор. В Еврозоната лихвените нива остават под влияние на решенията на Европейската централна банка (ЕЦБ), с тенденция към леко стабилизиране след последните корекции.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="summaryTrends">Ключови тенденции (в бbullets)</label>
+                        <textarea id="summaryTrends" rows="4" placeholder="Една тенденция на ред...">• Задържане на лихвените нива в лева под 2.6% при водещите банки.
+• Леко повишение на лихвите в евро с оглед на пазарната конюнктура в ЕС.
+• Стабилен обем на новоотпуснатите кредити за покупка на жилища.</textarea>
+                    </div>
+                    <!-- Export & PDF Generation -->
+                <div class="card">
+                    <div class="card-header">
+                        <i data-lucide="file-down"></i> Експорт и печат
+                    </div>
+                    <div class="card-body">
+                        <button id="btnExportPDF" class="btn btn-primary" style="width: 100%;">
+                            <i data-lucide="file-text"></i> Генерирай PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Layout Controls -->
+                <div class="card" id="layoutControlsCard">
+                    <div class="card-header">
+                        <i data-lucide="move"></i> Управление на обекта
+                    </div>
+                    <div class="card-body" style="display: flex; flex-direction: column; gap: 8px;">
+                        <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 5px;">Маркиран е обект. Можете да го местите или да променяте отстоянието му.</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <button id="btnMoveUp" class="btn btn-secondary" title="Премести нагоре">
+                                <i data-lucide="arrow-up"></i> Нагоре
+                            </button>
+                            <button id="btnMoveDown" class="btn btn-secondary" title="Премести надолу">
+                                <i data-lucide="arrow-down"></i> Надолу
+                            </button>
+                            <button id="btnAddSpace" class="btn btn-secondary" title="Увеличи разстояние">
+                                <i data-lucide="plus"></i> Отстояние
+                            </button>
+                            <button id="btnRemoveSpace" class="btn btn-secondary" title="Намали разстояние">
+                                <i data-lucide="minus"></i> Отстояние
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Draft Controls -->
+                <div class="card" id="draftControlsCard" style="margin-top: 10px;">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span><i data-lucide="save"></i> Чернова</span>
+                        <span id="draftStatusBadge" style="font-size: 10px; color: var(--color-gold); font-family: monospace; font-weight: 600;">Няма чернова</span>
+                    </div>
+                    <div class="card-body">
+                        <button id="btnClearDraft" class="btn btn-secondary btn-full" style="font-size: 11px; padding: 6px 10px;">
+                            <i data-lucide="trash-2"></i> Изчисти черновата
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Preview Area -->
+        <main class="preview-area">
+            <div class="preview-header">
+                <span class="preview-tag">Преглед в реално време (A4 формат, 2 страници - Напасвайте шрифтовете и отстоянията при преливане)</span>
+            </div>
+            
+            <div class="document-scroller">
+                <!-- Wrapper for capturing both pages -->
+                <div id="bulletinDocument" class="pdf-document-wrapper">
+                    
+                    <!-- PAGE 1 -->
+                    <div class="pdf-page page-break-after">
+                        <!-- Branded Header -->
+                        <header class="pdf-header">
+                            <div class="pdf-logo-box">
+                                <svg viewBox="0 0 100 100" class="pdf-logo-svg">
+                                    <path d="M20,80 L20,40 L50,15 L80,40 L80,80 Z" fill="none" stroke="#0B2545" stroke-width="5"/>
+                                    <path d="M35,80 L35,50 L65,50 L65,80" fill="none" stroke="#0B2545" stroke-width="5"/>
+                                    <circle cx="50" cy="50" r="10" fill="#EEB902"/>
+                                </svg>
+                                <div class="pdf-brand-text">
+                                    <h1>АСОЦИАЦИЯ НА КРЕДИТНИТЕ ПОСРЕДНИЦИ</h1>
+                                    <p>В БЪЛГАРИЯ</p>
+                                </div>
+                            </div>
+                            <div class="pdf-meta-box">
+                                <div class="pdf-doc-title">ИНФОРМАЦИОНЕН БЮЛЕТИН</div>
+                                <div class="pdf-doc-sub">Ипотечни лихви • Брой <span class="lblDocNum">06 / 2026</span></div>
+                                <div class="pdf-doc-date lblDocMonth">Юни 2026 г.</div>
+                            </div>
+                        </header>
+
+                        <div class="pdf-divider"></div>
+
+                        <!-- Sortable Container Page 1 -->
+                        <div id="page1Sortable" class="sortable-container" style="display: flex; flex-direction: column; flex: 1;">
+                            
+                            <!-- Market Overview Section -->
+                            <section class="pdf-section" id="section-market" style="margin-top: 0px;">
+                            <h2 class="pdf-section-title"><i data-lucide="trending-up" class="pdf-icon"></i> ПАЗАРЕН ОБЗОР & АНАЛИЗ</h2>
+                            <div class="pdf-grid-summary">
+                                <div class="pdf-summary-text" id="lblSummaryText" contenteditable="true">
+                                    <!-- Dynamic text populated by js -->
+                                </div>
+                                <div class="pdf-trends-box">
+                                    <h4>Ключови акценти</h4>
+                                    <ul id="lblTrendsList">
+                                        <!-- Dynamic list populated by js -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                            <!-- Key Stats Callout -->
+                            <section id="section-stats" style="margin-top: 15px;">
+                            
+                            <!-- Group 1 -->
+                            <h3 class="pdf-stats-group-title" contenteditable="true" style="margin-bottom: 8px; font-size: 13px; color: var(--color-primary); border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; text-align: center;">ЕЦБ Основни Лихви</h3>
+                            <div id="ecb-rates-row" class="pdf-stats-row" style="margin-bottom: 15px; display: flex; justify-content: center; gap: 15px;">
+                                <div class="pdf-stat-card pdf-stat-card-highlight" style="flex: 0 1 160px;">
+                                    <div class="stat-val" contenteditable="true">-- %</div>
+                                    <div class="stat-lbl" contenteditable="true">Депозитна лихва</div>
+                                </div>
+                                <div class="pdf-stat-card pdf-stat-card-highlight" style="flex: 0 1 160px;">
+                                    <div class="stat-val" contenteditable="true">-- %</div>
+                                    <div class="stat-lbl" contenteditable="true">Основна лихва</div>
+                                </div>
+                                <div class="pdf-stat-card pdf-stat-card-highlight" style="flex: 0 1 160px;">
+                                    <div class="stat-val" contenteditable="true">-- %</div>
+                                    <div class="stat-lbl" contenteditable="true">Пределна лихва</div>
+                                </div>
+                            </div>
+
+                            <!-- Group 2 -->
+                            <h3 class="pdf-stats-group-title" contenteditable="true" style="margin-bottom: 8px; font-size: 13px; color: var(--color-primary); border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Пазарни Лихви</h3>
+                            <div id="euribor-rates-row" class="pdf-stats-row" style="margin-bottom: 15px;">
+                                <div class="pdf-stat-card">
+                                    <div class="stat-val" contenteditable="true">-- %</div>
+                                    <div class="stat-lbl" contenteditable="true">EURIBOR 1M</div>
+                                </div>
+                                <div class="pdf-stat-card">
+                                    <div class="stat-val" contenteditable="true">-- %</div>
+                                    <div class="stat-lbl" contenteditable="true">EURIBOR 3M</div>
+                                </div>
+                                <div class="pdf-stat-card">
+                                    <div class="stat-val" contenteditable="true">-- %</div>
+                                    <div class="stat-lbl" contenteditable="true">EURIBOR 6M</div>
+                                </div>
+                                <div class="pdf-stat-card">
+                                    <div class="stat-val" contenteditable="true">-- %</div>
+                                    <div class="stat-lbl" contenteditable="true">EURIBOR 12M</div>
+                                </div>
+                            </div>
+
+                            <!-- Group 3 -->
+                            <h3 class="pdf-stats-group-title" contenteditable="true" style="margin-bottom: 8px; font-size: 13px; color: var(--color-primary); border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Ипотечни Лихви</h3>
+                            <div class="pdf-stats-row">
+                                <div class="pdf-stat-card">
+                                    <div class="stat-val" id="statAvgBGN" contenteditable="true">-- %</div>
+                                    <div class="stat-lbl" contenteditable="true">Лихва България (BG)</div>
+                                </div>
+                                <div class="pdf-stat-card">
+                                    <div class="stat-val" id="statMinBGN" contenteditable="true">-- %</div>
+                                    <div class="stat-lbl" contenteditable="true">Лихва Еврозона (U2)</div>
+                                </div>
+                                <div class="pdf-stat-card">
+                                    <div class="stat-val" id="statAvgEUR" contenteditable="true">-- %</div>
+                                    <div class="stat-lbl" contenteditable="true">Спред спрямо U2</div>
+                                </div>
+                                <div class="pdf-stat-card">
+                                    <div class="stat-val" id="statMinEUR" contenteditable="true">-- %</div>
+                                    <div class="stat-lbl" contenteditable="true">Най-висока лихва</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        </div>
+
+                        <!-- Page 1 Footer -->
+                        <footer class="pdf-footer" style="margin-top: auto; border-top: 1px solid var(--color-border); padding-top: 8px;">
+                            <div class="footer-info">
+                                <span>АКПБ • Асоциация на кредитните посредници в България</span>
+                                <span>Страница 1 от 2</span>
+                            </div>
+                        </footer>
+                    </div>
+
+                    <!-- PAGE 2 -->
+                    <div class="pdf-page">
+                        <!-- Branded Mini Header for Page 2 -->
+                        <header class="pdf-header">
+                            <div class="pdf-logo-box">
+                                <svg viewBox="0 0 100 100" class="pdf-logo-svg" style="width: 38px; height: 38px;">
+                                    <path d="M20,80 L20,40 L50,15 L80,40 L80,80 Z" fill="none" stroke="#0B2545" stroke-width="5"/>
+                                    <path d="M35,80 L35,50 L65,50 L65,80" fill="none" stroke="#0B2545" stroke-width="5"/>
+                                    <circle cx="50" cy="50" r="10" fill="#EEB902"/>
+                                </svg>
+                                <div class="pdf-brand-text">
+                                    <h1 style="font-size: 13px;">АСОЦИАЦИЯ НА КРЕДИТНИТЕ ПОСРЕДНИЦИ</h1>
+                                    <p style="font-size: 10px;">В БЪЛГАРИЯ</p>
+                                </div>
+                            </div>
+                            <div class="pdf-meta-box">
+                                <div class="pdf-doc-sub" style="margin-top: 0;">Ипотечни лихви • Брой <span class="lblDocNum">06 / 2026</span></div>
+                                <div class="pdf-doc-date lblDocMonth" style="font-size: 10px;">Юни 2026 г.</div>
+                            </div>
+                        </header>
+
+                        <div class="pdf-divider" style="margin-bottom: 15px;"></div>
+
+                        <!-- Sortable Container Page 2 -->
+                        <div id="page2Sortable" class="sortable-container" style="display: flex; flex-direction: column; flex: 1;">
+
+                            <!-- Master Comparison Table on Page 2 (Horizontal countries) -->
+                            <section class="pdf-section" id="section-table" style="display: flex; flex-direction: column; margin-top: 0px;">
+                            <h2 class="pdf-section-title"><i data-lucide="table" class="pdf-icon"></i> СРАВНИТЕЛЕН ПАЗАРЕН АНАЛИЗ ПО ДЪРЖАВИ</h2>
+                            
+                            <div class="tables-container" style="flex: 1; overflow-x: auto; overflow-y: visible; max-width: 100%;">
+                                <table class="pdf-table" id="masterTable">
+                                    <thead>
+                                        <tr id="tableHeaders">
+                                            <!-- Dynamically populated headers -->
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody">
+                                        <!-- Dynamically populated rows -->
+                                    </tbody>
+                                </table>
+                                <div id="tableNotes" class="pdf-table-notes" contenteditable="true" style="font-size: 7.5px; color: #64748b; margin-top: 6px; line-height: 1.35; padding: 2px 4px; border-left: 2px solid #cbd5e1;"></div>
+                            </div>
+                        </section>
+
+                            <!-- Charts on Page 2 -->
+                            <section class="pdf-section" id="section-charts" style="margin-top: 20px;">
+                                <h2 class="pdf-section-title"><i data-lucide="bar-chart-2" class="pdf-icon"></i> ГРАФИКИ НА ИЗБРАНИТЕ ПОКАЗАТЕЛИ</h2>
+                                <div id="chartsContainer" class="pdf-charts-grid">
+                                    <!-- Dynamic charts here -->
+                                </div>
+                            </section>
+
+                        <!-- Footer on Page 2 -->
+                        <footer class="pdf-footer" style="margin-top: auto;">
+                            <div id="compilerLine" class="footer-compiler" contenteditable="true" style="font-size: 8.5px; color: #475569; margin-bottom: 4px;">
+                                <!-- Dynamically populated by js -->
+                            </div>
+                            <div class="footer-info">
+                                <span>АКПБ • Асоциация на кредитните посредници в България</span>
+                                <span>Уебсайт: <a href="https://acib.bg" target="_blank">www.acib.bg</a> • Е-поща: office@acib.bg</span>
+                                <span>Страница 2 от 2</span>
+                            </div>
+                            <div class="footer-disclaimer">
+                                Отказ от отговорност: Представените данни имат информативен характер и отразяват офертните условия на банките към момента на съставяне на бюлетина. АКПБ не носи отговорност за промени в тарифите на банковите институции.
+                            </div>
+                        </footer>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script imports -->
+    <script src="app.js?v=15"></script>
+    <script>
+        // Initialize lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
