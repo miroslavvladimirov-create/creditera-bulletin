@@ -545,8 +545,8 @@ function renderIndicatorPage(indCfg, jsonData) {
     }
 
     if (footnoteEl) {
-        if (indKey === 'rate' && bgHistorySource) {
-            footnoteEl.innerText = `* BG: ${bgHistorySource}.`;
+        if (indKey === 'rate') {
+            footnoteEl.innerText = '* България: до 12/2025 г. по данни на БНБ (конструиран ред в евро); от 01/2026 г. по данни на ЕЦБ.';
             footnoteEl.style.display = 'block';
         } else if (hasLowVolume) {
             footnoteEl.innerText = '* Сегменти с ограничен обем на нов бизнес могат да показват нетипични стойности.';
@@ -808,6 +808,7 @@ function saveDraft() {
     });
 
     const coverTocList = document.getElementById('coverTocList');
+    const coverLead = document.getElementById('coverLead');
 
     const draftData = {
         savedAt: new Date().toISOString(),
@@ -816,6 +817,7 @@ function saveDraft() {
         inputMonth: inputMonth ? inputMonth.value : '',
         inputAuthor: inputAuthor ? inputAuthor.value : '',
         coverTocHtml: coverTocList ? coverTocList.innerHTML : '',
+        coverLeadHtml: coverLead ? coverLead.innerHTML : '',
         summaryText: inputText ? inputText.value : '',
         lblSummaryHtml: lblSummaryText ? lblSummaryText.innerHTML : '',
         commentaries: commentaries,
@@ -869,10 +871,14 @@ function restoreDraft(key) {
         }
         if (draft.inputAuthor && inputAuthor) inputAuthor.value = draft.inputAuthor;
 
-        // 3. Cover TOC
+        // 3. Cover TOC & Lead
         const coverTocList = document.getElementById('coverTocList');
         if (draft.coverTocHtml && coverTocList) {
             coverTocList.innerHTML = draft.coverTocHtml;
+        }
+        const coverLead = document.getElementById('coverLead');
+        if (draft.coverLeadHtml && coverLead) {
+            coverLead.innerHTML = draft.coverLeadHtml;
         }
 
         // 4. Summary on Page 2
@@ -970,10 +976,18 @@ function setupEventListeners() {
         });
     }
 
-    // Cover TOC inline edit
+    // Cover TOC & Lead inline edit
     const coverTocList = document.getElementById('coverTocList');
     if (coverTocList) {
         coverTocList.addEventListener('blur', () => {
+            debounceSaveDraft();
+            checkPagesOverflow();
+        });
+    }
+
+    const coverLead = document.getElementById('coverLead');
+    if (coverLead) {
+        coverLead.addEventListener('blur', () => {
             debounceSaveDraft();
             checkPagesOverflow();
         });
