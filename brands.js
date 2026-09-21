@@ -68,7 +68,7 @@ const BRANDS = {
             <img src="assets/creditera-logo.png" alt="CreditERA Logo" style="height: 18px; width: auto; max-width: 90px; object-fit: contain;">
         `,
         coverLogoHtml: `
-            <img src="assets/creditera-logo.png" alt="CreditERA Logo" class="pdf-cover-logo-img" style="height: 56px; width: auto; max-width: 220px; object-fit: contain;">
+            <div class="creditera-cover-brand-title" style="font-family: 'Montserrat', sans-serif; font-size: 26pt; font-weight: 800; color: #ffffff; letter-spacing: 2px; text-transform: uppercase; line-height: 1;">CREDITERA</div>
         `,
         palette: {
             primary: '#202E64',
@@ -81,7 +81,7 @@ const BRANDS = {
         website: 'www.creditera.bg',
         coverContact: 'CreditERA • Ипотечни и кредитни консултации • www.creditera.bg',
         footerTextPage1: 'CreditERA • Ипотечни и кредитни консултации • www.creditera.bg',
-        footerMini: 'CREDITERA',
+        footerMini: 'ИПОТЕЧЕН БЮЛЕТИН',
         disclaimer: 'Отказ от отговорност: Представените данни имат информативен характер и отразяват официалната статистика на ЕЦБ и БНБ към момента на съставяне на бюлетина. CreditERA не носи отговорност за промени в тарифите на банковите институции.',
         compiler: {
             name: 'гл. ас. д-р Мирослав Владимиров',

@@ -781,10 +781,26 @@ body[data-brand="creditera"] .pdf-page.cover-page .cover-top-row {
     min-height: 38mm;
 }
 
+body[data-brand="creditera"] .pdf-page.cover-page .cover-logo-box {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-logo-box .creditera-cover-brand-title {
+    font-family: var(--font-heading);
+    font-size: 26pt;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
 body[data-brand="creditera"] .pdf-page.cover-page .cover-logo-box img {
-    height: 14mm !important;
+    height: 16mm !important;
     width: auto;
-    max-width: 140px;
+    max-width: 160px;
     object-fit: contain;
 }
 
@@ -975,7 +991,7 @@ body[data-brand="creditera"] .pdf-page.cover-page .cover-bottom-row {
     border-radius: 0 4px 4px 0;
 }
 
-/* Indicator Table (22 rows vertical, taking ~58% height) */
+/* Indicator Table (22 rows vertical, clear and readable) */
 .indicator-table-wrapper {
     margin-bottom: 0;
 }
@@ -983,7 +999,7 @@ body[data-brand="creditera"] .pdf-page.cover-page .cover-bottom-row {
 .indicator-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: var(--table-font-size, 10.5px);
+    font-size: var(--table-font-size, 11px);
 }
 
 .indicator-table th {
@@ -991,20 +1007,20 @@ body[data-brand="creditera"] .pdf-page.cover-page .cover-bottom-row {
     color: #ffffff;
     font-family: var(--font-heading);
     font-weight: 700;
-    padding: 4.5px 3px;
+    padding: 5px 3.5px;
     text-align: center;
     border: 1px solid var(--color-primary);
-    font-size: var(--table-font-size, 10.5px);
+    font-size: var(--table-font-size, 11px);
     text-transform: uppercase;
 }
 
 .indicator-table th:first-child {
     text-align: left;
-    padding-left: 6px;
+    padding-left: 8px;
 }
 
 .indicator-table td {
-    padding: 3.2px 3px;
+    padding: 4px 3.5px;
     border: 1px solid #e2e8f0;
     text-align: center;
     line-height: 1.15;
@@ -1012,8 +1028,8 @@ body[data-brand="creditera"] .pdf-page.cover-page .cover-bottom-row {
 
 .indicator-table td:first-child {
     text-align: left;
-    padding-left: 6px;
-    font-weight: 500;
+    padding-left: 8px;
+    font-weight: 600;
 }
 
 .indicator-table tr:nth-child(even) {
@@ -1035,13 +1051,14 @@ body[data-brand="creditera"] .pdf-page.cover-page .cover-bottom-row {
     font-style: italic;
 }
 
-/* Indicator Chart Container (flex: 1 to fill available vertical space) */
+/* Indicator Chart Container (flex: 1 with margin-top spacing) */
 .indicator-chart-wrapper {
     flex: 1;
     min-height: 0;
     max-height: var(--chart-max-height, none);
     position: relative;
     width: 100%;
+    margin-top: 12px;
     margin-bottom: 0;
 }
 

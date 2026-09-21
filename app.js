@@ -571,9 +571,8 @@ function renderIndicatorChart(indKey, countries, isGrowth = false) {
 
     const b = (typeof BRANDS !== 'undefined' && BRANDS[currentBrand]) ? BRANDS[currentBrand] : null;
     const primaryColor = b?.palette?.primary || '#0B2545';
-    const accentColor = b?.palette?.accent || '#EEB902';
-    const bgBarColor = accentColor; // Brand accent for BG (Gold for AKPB, Green for CreditERA)
-    const u2BarColor = b?.palette?.primaryLight || '#314575'; // Brand primary light for Eurozone
+    const bgBarColor = (currentBrand === 'creditera') ? '#3EA93F' : (b?.palette?.accent || '#EEB902');
+    const u2BarColor = '#DC2626'; // Червено за Еврозоната
 
     const labels = countries.map(c => c.code);
     const dataValues = countries.map(c => {
@@ -620,10 +619,11 @@ function renderIndicatorChart(indKey, countries, isGrowth = false) {
                 x: {
                     grid: { display: false },
                     ticks: {
-                        font: { size: 8, family: 'Inter, sans-serif', weight: '600' },
+                        font: { size: 8, family: 'Inter, sans-serif', weight: '700' },
                         color: (ctx) => {
                             const label = ctx.tick?.label;
-                            if (label === 'BG') return accentColor;
+                            if (label === 'BG') return bgBarColor;
+                            if (label === 'U2') return '#DC2626';
                             return '#64748b';
                         }
                     }
@@ -901,8 +901,9 @@ function restoreDraft(key) {
             if (docWrapper) docWrapper.style.setProperty('--table-font-size', `${draft.sliderTableFont}px`);
         }
         if (draft.sliderChartHeight && sliderChartHeight) {
-            sliderChartHeight.value = draft.sliderChartHeight;
-            const val = parseInt(draft.sliderChartHeight, 10);
+            let val = parseInt(draft.sliderChartHeight, 10);
+            if (val === 140) val = 300; // migrate old 140px default to full stretch
+            sliderChartHeight.value = val;
             if (val >= 300) {
                 if (lblChartHeight) lblChartHeight.innerText = 'Без лимит';
                 if (docWrapper) docWrapper.style.setProperty('--chart-max-height', 'none');
