@@ -572,13 +572,26 @@ function renderIndicatorChart(indKey, countries, isGrowth = false) {
     const bgBarColor = '#3EA93F'; // ВИНАГИ зелено за България (BG) за всички брандове
     const u2BarColor = '#DC2626'; // ВИНАГИ червено за Еврозоната (U2)
 
-    const labels = countries.map(c => c.code);
-    const dataValues = countries.map(c => {
+    // Сортиране от най-голямото към най-малкото (низходящо). Липсващите стойности отиват в края.
+    const chartItems = countries.map(c => {
         const v = c.indicators?.[indKey]?.value;
-        return (v !== null && v !== undefined) ? v : null;
+        return {
+            code: c.code,
+            value: (v !== null && v !== undefined) ? v : null
+        };
     });
 
-    const backgroundColors = countries.map(c => {
+    chartItems.sort((a, b) => {
+        if (a.value === null && b.value === null) return 0;
+        if (a.value === null) return 1;
+        if (b.value === null) return -1;
+        return b.value - a.value;
+    });
+
+    const labels = chartItems.map(c => c.code);
+    const dataValues = chartItems.map(c => c.value);
+
+    const backgroundColors = chartItems.map(c => {
         if (c.code === 'BG') return bgBarColor;
         if (c.code === 'U2') return u2BarColor;
         return primaryColor;
