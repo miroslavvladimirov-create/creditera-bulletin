@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ипотечен Пазарен Бюлетин (9 стр. A4)</title>
-    <!-- Google Fonts: Inter & Montserrat -->
+    <!-- Google Fonts: IBM Plex Sans, Inter & Montserrat -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Chart.js -->
@@ -18,7 +18,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css?v=14">
+    <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body data-brand="akpb">
     <div class="app-container">
@@ -49,15 +49,28 @@
                             <i data-lucide="building-2"></i> АКПБ
                         </button>
                         <button type="button" id="btnBrandCreditera" class="btn brand-btn" data-brand="creditera">
-                            <i data-lucide="award"></i> CreditERA
+                            <i data-lucide="award"></i> CreditERA.bg
                         </button>
                     </div>
                 </div>
 
-                <!-- Step 2: Metadata Configuration -->
+                <!-- Step 2: Metadata Configuration & Archive -->
                 <div class="control-section">
-                    <h3><i data-lucide="file-text"></i> 2. Месец и параметри</h3>
+                    <h3><i data-lucide="file-text"></i> 2. Месец и архив</h3>
                     <div class="form-group">
+                        <label for="archiveSelector">Архив на броевете</label>
+                        <select id="archiveSelector" style="width: 100%; padding: 8px 10px; background: rgba(255,255,255,0.08); border: 1px solid var(--sidebar-border); border-radius: 6px; color: #ffffff; font-size: 13px; font-weight: 500; outline: none; margin-bottom: 8px; cursor: pointer;">
+                            <option value="current" selected>Юли 2026 г. (Текущ брой)</option>
+                            <option value="2026-06">Юни 2026 г.</option>
+                            <option value="2026-05">Май 2026 г.</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display: flex; gap: 8px;">
+                        <button type="button" id="btnRefreshData" class="btn btn-secondary" style="flex: 1; font-size: 11px; padding: 6px 8px; display: flex; align-items: center; justify-content: center; gap: 5px;" title="Презареждане на данните от източника">
+                            <i data-lucide="rotate-cw" style="width: 13px; height: 13px;"></i> Опресни данни
+                        </button>
+                    </div>
+                    <div class="form-group" style="margin-top: 8px;">
                         <label for="bulletinNum">Брой №</label>
                         <input type="text" id="bulletinNum" value="07 / 2026">
                     </div>
@@ -73,7 +86,7 @@
 
                 <!-- Step 3: Page Layout Calibration Sliders -->
                 <div class="control-section">
-                    <h3><i data-lucide="sliders"></i> 3. Калибрация на страниците (9 x A4)</h3>
+                    <h3><i data-lucide="sliders"></i> 3. Калибрация на страниците (10 x A4)</h3>
                     <div class="form-group">
                         <label for="sliderTableFont" style="display: flex; justify-content: space-between;">
                             <span>Шрифт на таблиците:</span>
@@ -121,7 +134,7 @@
                     </div>
                     <div class="card-body">
                         <button id="btnExportPDF" class="btn btn-primary" style="width: 100%;">
-                            <i data-lucide="file-text"></i> Генерирай PDF (9 стр.)
+                            <i data-lucide="file-text"></i> Генерирай PDF (10 стр.)
                         </button>
                         <button id="btnExportBothPDF" class="btn btn-secondary" style="width: 100%; margin-top: 8px;">
                             <i data-lucide="files"></i> PDF за двата бранда
@@ -147,8 +160,8 @@
         <!-- Main Preview Area -->
         <main class="preview-area">
             <div class="preview-header">
-                <span class="preview-tag">Преглед в реално време (A4 формат, 9 страници — фиксирана височина 297mm)</span>
-                <span id="pageCountBadge" style="font-size: 12px; font-weight: 600; color: var(--color-primary); background: #e0e7ff; padding: 4px 10px; border-radius: 12px;">9 страници</span>
+                <span class="preview-tag">Преглед в реално време (A4 формат, 10 страници — фиксирана височина 297mm)</span>
+                <span id="pageCountBadge" style="font-size: 12px; font-weight: 600; color: var(--color-primary); background: #e0e7ff; padding: 4px 10px; border-radius: 12px;">10 страници</span>
             </div>
             
             <div class="document-scroller">
@@ -185,20 +198,20 @@
                             </ul>
                         </div>
 
-                        <!-- Lower Third: 3 Key Indicators from JSON -->
+                        <!-- Lower Third: 3 Key Indicators from JSON (editable) -->
                         <div class="cover-kpi-block">
                             <div class="cover-kpi-item">
-                                <div class="cover-kpi-val" id="coverKpiRate">2.43 %</div>
+                                <div class="cover-kpi-val" id="coverKpiRate" contenteditable="true">2.43 %</div>
                                 <div class="cover-kpi-label">Средна лихва по нови жилищни кредити в България</div>
                                 <div class="cover-kpi-sub lblKpiPeriodSub">данни за юли 2026 г.</div>
                             </div>
                             <div class="cover-kpi-item">
-                                <div class="cover-kpi-val" id="coverKpiSpread">-111 б.т.</div>
+                                <div class="cover-kpi-val" id="coverKpiSpread" contenteditable="true">-111 б.т.</div>
                                 <div class="cover-kpi-label">Разлика спрямо еврозоната</div>
                                 <div class="cover-kpi-sub lblKpiPeriodSub">данни за юли 2026 г.</div>
                             </div>
                             <div class="cover-kpi-item">
-                                <div class="cover-kpi-val" id="coverKpiGrowth">+25.72 %</div>
+                                <div class="cover-kpi-val" id="coverKpiGrowth" contenteditable="true">+25.72 %</div>
                                 <div class="cover-kpi-label">Годишен ръст на жилищните кредити в България</div>
                                 <div class="cover-kpi-sub lblKpiPeriodSub">данни за юли 2026 г.</div>
                             </div>
@@ -209,11 +222,19 @@
                             Месечният ипотечен бюлетин предоставя задълбочен сравнителен анализ на лихвените нива, динамиката на жилищното кредитиране и ключовите макроикономически фактори в България и еврозоната, подпомагайки потребителите и професионалистите при вземането на информирани финансови решения.
                         </div>
 
-                        <!-- Bottom Row: Contact info & As-of date (NO page number) -->
-                        <div class="cover-bottom-row">
-                            <div class="cover-contact-text brand-cover-contact" id="coverContactText">АКПБ • Асоциация на кредитните посредници в България • www.acib.bg</div>
-                            <div class="cover-data-date" id="coverDataDate">Данни към 31.07.2026 г.</div>
-                        </div>
+                        <!-- Footer (Page 1) -->
+                        <footer class="pdf-footer cover-footer">
+                            <div class="footer-bottom-line">
+                                <div class="footer-meta-left">
+                                    <span>Брой <span class="lblDocNum">07 / 2026</span></span>
+                                </div>
+                                <div class="footer-info">
+                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP1"></span>
+                                    <span class="footer-brand-slogan brand-footer-slogan"></span>
+                                </div>
+                                <div class="footer-page-num">Страница 1 от 10</div>
+                            </div>
+                        </footer>
                     </div>
 
                     <!-- ========================================== -->
@@ -236,18 +257,21 @@
                                 <div class="cards-grid-3">
                                     <div class="kpi-card" id="card-ecb-dfr">
                                         <div class="kpi-label">Депозитно улеснение (DFR)</div>
-                                        <div class="kpi-value" id="ecb-dfr-val">2.25 %</div>
-                                        <div class="kpi-delta delta-flat" id="ecb-dfr-delta">► 0.00 п.п.</div>
+                                        <div class="kpi-value" id="ecb-dfr-val" contenteditable="true">2.25 %</div>
+                                        <div class="kpi-delta delta-up" id="ecb-dfr-delta" contenteditable="true">▲ +0.25 п.п.</div>
+                                        <div class="kpi-date-sub" id="ecb-dfr-date" contenteditable="true">в сила от 17.06.2026 г.</div>
                                     </div>
                                     <div class="kpi-card" id="card-ecb-mro">
                                         <div class="kpi-label">Основни операции по рефинансиране (MRO)</div>
-                                        <div class="kpi-value" id="ecb-mro-val">2.40 %</div>
-                                        <div class="kpi-delta delta-flat" id="ecb-mro-delta">► 0.00 п.п.</div>
+                                        <div class="kpi-value" id="ecb-mro-val" contenteditable="true">2.40 %</div>
+                                        <div class="kpi-delta delta-up" id="ecb-mro-delta" contenteditable="true">▲ +0.25 п.п.</div>
+                                        <div class="kpi-date-sub" id="ecb-mro-date" contenteditable="true">в сила от 17.06.2026 г.</div>
                                     </div>
                                     <div class="kpi-card" id="card-ecb-mlf">
                                         <div class="kpi-label">Пределно кредитно улеснение (MLF)</div>
-                                        <div class="kpi-value" id="ecb-mlf-val">2.65 %</div>
-                                        <div class="kpi-delta delta-flat" id="ecb-mlf-delta">► 0.00 п.п.</div>
+                                        <div class="kpi-value" id="ecb-mlf-val" contenteditable="true">2.65 %</div>
+                                        <div class="kpi-delta delta-up" id="ecb-mlf-delta" contenteditable="true">▲ +0.25 п.п.</div>
+                                        <div class="kpi-date-sub" id="ecb-mlf-date" contenteditable="true">в сила от 17.06.2026 г.</div>
                                     </div>
                                 </div>
                             </section>
@@ -296,23 +320,84 @@
                         </div>
                         <footer class="pdf-footer">
                             <div class="footer-bottom-line">
+                                <div class="footer-meta-left">
+                                    <span>Брой <span class="lblDocNum">07 / 2026</span></span>
+                                </div>
                                 <div class="footer-info">
                                     <span class="footer-brand-title brand-footer-mini" id="brandFooterP2"></span>
                                     <span class="footer-brand-slogan brand-footer-slogan"></span>
                                 </div>
-                                <div class="footer-page-num">Страница 2 от 9</div>
+                                <div class="footer-page-num">Страница 2 от 10</div>
                             </div>
                         </footer>
                     </div>
 
                     <!-- ========================================== -->
-                    <!-- PAGES 3 TO 9: 7 INDICATOR PAGES            -->
+                    <!-- PAGES 3 TO 10: 8 INDICATOR PAGES           -->
                     <!-- ========================================== -->
 
-                    <!-- PAGE 3: rate -->
-                    <div class="pdf-page page-break-after indicator-page" id="page-3" data-indicator="rate" data-kind="rate">
+                    <!-- PAGE 3: aprc (Годишен процент на разходите - ГПР) -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-3" data-indicator="aprc" data-kind="rate">
                         <header class="pdf-mini-header">
                             <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP3"></div>
+                            <div class="pdf-mini-meta">
+                                <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
+                                <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
+                                <span class="lblDocMonth">Юли 2026 г.</span>
+                            </div>
+                        </header>
+                        <div class="pdf-divider-mini"></div>
+                        <div class="page-content indicator-page-content">
+                            <div class="indicator-header-block">
+                                <h2 class="indicator-title" id="title-aprc">Годишен процент на разходите (ГПР / APRC)</h2>
+                                <div class="indicator-commentary" id="commentary-aprc" contenteditable="true">
+                                    Годишният процент на разходите (APRC / ГПР) по нови жилищни кредити отразява реалната обща цена за кредитополучателя, включително лихвата, комисионите и всички съпътстващи разходи съгласно методологията на ЕЦБ (MIR A2C) и БНБ.
+                                </div>
+                            </div>
+                            <div class="indicator-table-wrapper">
+                                <table class="indicator-table" id="table-aprc">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 15%;">Държава</th>
+                                            <th style="width: 11%;">Стойност</th>
+                                            <th style="width: 9.5%;">Δ 1М</th>
+                                            <th style="width: 9.5%;">Δ 3М</th>
+                                            <th style="width: 9.5%;">Δ 6М</th>
+                                            <th style="width: 9.5%;">Δ 12М</th>
+                                            <th style="width: 12%;">Спред ЕЗ (б.т.)</th>
+                                            <th style="width: 11.5%;">Ст.откл. 24М</th>
+                                            <th style="width: 11.5%;">Z-Score 24М</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody-aprc"></tbody>
+                                </table>
+                            </div>
+                            <div class="indicator-chart-wrapper">
+                                <canvas id="chart-aprc"></canvas>
+                            </div>
+                            <div class="indicator-notes-block">
+                                <div class="indicator-warnings" id="warnings-aprc"></div>
+                                <div class="indicator-footnote" id="footnote-aprc" style="display: none;"></div>
+                            </div>
+                        </div>
+                        <footer class="pdf-footer">
+                            <div class="footer-bottom-line">
+                                <div class="footer-meta-left">
+                                    <span>Брой <span class="lblDocNum">07 / 2026</span></span>
+                                </div>
+                                <div class="footer-info">
+                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP3"></span>
+                                    <span class="footer-brand-slogan brand-footer-slogan"></span>
+                                </div>
+                                <div class="footer-page-num">Страница 3 от 10</div>
+                            </div>
+                        </footer>
+                    </div>
+
+                    <!-- PAGE 4: rate (Цената на кредита - CoB) -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-4" data-indicator="rate" data-kind="rate">
+                        <header class="pdf-mini-header">
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP4"></div>
                             <div class="pdf-mini-meta">
                                 <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
                                 <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
@@ -355,19 +440,22 @@
                         </div>
                         <footer class="pdf-footer">
                             <div class="footer-bottom-line">
+                                <div class="footer-meta-left">
+                                    <span>Брой <span class="lblDocNum">07 / 2026</span></span>
+                                </div>
                                 <div class="footer-info">
-                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP3"></span>
+                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP4"></span>
                                     <span class="footer-brand-slogan brand-footer-slogan"></span>
                                 </div>
-                                <div class="footer-page-num">Страница 3 от 9</div>
+                                <div class="footer-page-num">Страница 4 от 10</div>
                             </div>
                         </footer>
                     </div>
 
-                    <!-- PAGE 4: fix_f -->
-                    <div class="pdf-page page-break-after indicator-page" id="page-4" data-indicator="fix_f" data-kind="rate">
+                    <!-- PAGE 5: fix_f -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-5" data-indicator="fix_f" data-kind="rate">
                         <header class="pdf-mini-header">
-                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP4"></div>
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP5"></div>
                             <div class="pdf-mini-meta">
                                 <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
                                 <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
@@ -412,19 +500,22 @@
                         </div>
                         <footer class="pdf-footer">
                             <div class="footer-bottom-line">
+                                <div class="footer-meta-left">
+                                    <span>Брой <span class="lblDocNum">07 / 2026</span></span>
+                                </div>
                                 <div class="footer-info">
-                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP4"></span>
+                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP5"></span>
                                     <span class="footer-brand-slogan brand-footer-slogan"></span>
                                 </div>
-                                <div class="footer-page-num">Страница 4 от 9</div>
+                                <div class="footer-page-num">Страница 5 от 10</div>
                             </div>
                         </footer>
                     </div>
 
-                    <!-- PAGE 5: fix_i -->
-                    <div class="pdf-page page-break-after indicator-page" id="page-5" data-indicator="fix_i" data-kind="rate">
+                    <!-- PAGE 6: fix_i -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-6" data-indicator="fix_i" data-kind="rate">
                         <header class="pdf-mini-header">
-                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP5"></div>
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP6"></div>
                             <div class="pdf-mini-meta">
                                 <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
                                 <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
@@ -469,19 +560,22 @@
                         </div>
                         <footer class="pdf-footer">
                             <div class="footer-bottom-line">
+                                <div class="footer-meta-left">
+                                    <span>Брой <span class="lblDocNum">07 / 2026</span></span>
+                                </div>
                                 <div class="footer-info">
-                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP5"></span>
+                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP6"></span>
                                     <span class="footer-brand-slogan brand-footer-slogan"></span>
                                 </div>
-                                <div class="footer-page-num">Страница 5 от 9</div>
+                                <div class="footer-page-num">Страница 6 от 10</div>
                             </div>
                         </footer>
                     </div>
 
-                    <!-- PAGE 6: fix_o -->
-                    <div class="pdf-page page-break-after indicator-page" id="page-6" data-indicator="fix_o" data-kind="rate">
+                    <!-- PAGE 7: fix_o -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-7" data-indicator="fix_o" data-kind="rate">
                         <header class="pdf-mini-header">
-                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP6"></div>
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP7"></div>
                             <div class="pdf-mini-meta">
                                 <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
                                 <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
@@ -526,19 +620,22 @@
                         </div>
                         <footer class="pdf-footer">
                             <div class="footer-bottom-line">
+                                <div class="footer-meta-left">
+                                    <span>Брой <span class="lblDocNum">07 / 2026</span></span>
+                                </div>
                                 <div class="footer-info">
-                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP6"></span>
+                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP7"></span>
                                     <span class="footer-brand-slogan brand-footer-slogan"></span>
                                 </div>
-                                <div class="footer-page-num">Страница 6 от 9</div>
+                                <div class="footer-page-num">Страница 7 от 10</div>
                             </div>
                         </footer>
                     </div>
 
-                    <!-- PAGE 7: fix_p -->
-                    <div class="pdf-page page-break-after indicator-page" id="page-7" data-indicator="fix_p" data-kind="rate">
+                    <!-- PAGE 8: fix_p -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-8" data-indicator="fix_p" data-kind="rate">
                         <header class="pdf-mini-header">
-                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP7"></div>
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP8"></div>
                             <div class="pdf-mini-meta">
                                 <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
                                 <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
@@ -583,19 +680,22 @@
                         </div>
                         <footer class="pdf-footer">
                             <div class="footer-bottom-line">
+                                <div class="footer-meta-left">
+                                    <span>Брой <span class="lblDocNum">07 / 2026</span></span>
+                                </div>
                                 <div class="footer-info">
-                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP7"></span>
+                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP8"></span>
                                     <span class="footer-brand-slogan brand-footer-slogan"></span>
                                 </div>
-                                <div class="footer-page-num">Страница 7 от 9</div>
+                                <div class="footer-page-num">Страница 8 от 10</div>
                             </div>
                         </footer>
                     </div>
 
-                    <!-- PAGE 8: loan_growth_yoy -->
-                    <div class="pdf-page page-break-after indicator-page" id="page-8" data-indicator="loan_growth_yoy" data-kind="growth">
+                    <!-- PAGE 9: loan_growth_yoy -->
+                    <div class="pdf-page page-break-after indicator-page" id="page-9" data-indicator="loan_growth_yoy" data-kind="growth">
                         <header class="pdf-mini-header">
-                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP8"></div>
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP9"></div>
                             <div class="pdf-mini-meta">
                                 <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
                                 <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
@@ -640,19 +740,22 @@
                         </div>
                         <footer class="pdf-footer">
                             <div class="footer-bottom-line">
+                                <div class="footer-meta-left">
+                                    <span>Брой <span class="lblDocNum">07 / 2026</span></span>
+                                </div>
                                 <div class="footer-info">
-                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP8"></span>
+                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP9"></span>
                                     <span class="footer-brand-slogan brand-footer-slogan"></span>
                                 </div>
-                                <div class="footer-page-num">Страница 8 от 9</div>
+                                <div class="footer-page-num">Страница 9 от 10</div>
                             </div>
                         </footer>
                     </div>
 
-                    <!-- PAGE 9: rate_outstanding + COMPILER & DISCLAIMER -->
-                    <div class="pdf-page indicator-page" id="page-9" data-indicator="rate_outstanding" data-kind="rate">
+                    <!-- PAGE 10: rate_outstanding + COMPILER & DISCLAIMER -->
+                    <div class="pdf-page indicator-page" id="page-10" data-indicator="rate_outstanding" data-kind="rate">
                         <header class="pdf-mini-header">
-                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP9"></div>
+                            <div class="pdf-mini-logo brand-mini-logo" id="brandMiniLogoP10"></div>
                             <div class="pdf-mini-meta">
                                 <span class="brandDocTitleMini">ИНФОРМАЦИОНЕН БЮЛЕТИН</span> • 
                                 <span>Брой <span class="lblDocNum">07 / 2026</span></span> • 
@@ -695,19 +798,34 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Compiler & Disclaimer on Page 9 -->
-                        <div class="compiler-disclaimer-box" style="margin-top: 4px; margin-bottom: 2px;">
-                            <div id="compilerLine" class="footer-compiler" contenteditable="true"></div>
-                            <div class="footer-disclaimer" id="brandDisclaimer"></div>
+                        <!-- Compiler & Disclaimer on Page 10 -->
+                        <div class="compiler-disclaimer-box" id="compilerDisclaimerBox">
+                            <div class="compiler-meta-row">
+                                <span><strong>Съставител и анализ:</strong> гл. ас. д-р Мирослав Владимиров</span>
+                                <span class="compiler-separator">•</span>
+                                <span><strong>Контакт:</strong> <a href="mailto:mvladimirov@creditera.bg" class="compiler-email-link">mvladimirov@creditera.bg</a> • <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" class="compiler-site-link" style="color: inherit; text-decoration: underline;">creditera.bg</a></span>
+                            </div>
+                            <div class="compiler-notes-text">
+                                <strong>Източници и методологична бележка:</strong> Бюлетинът използва официални статистически данни на ЕЦБ и БНБ, налични към датата на съставянето му. Данните подлежат на последващи ревизии. Представените лихвени показатели са агрегирани статистически стойности и не представляват конкретни банкови оферти.
+                            </div>
+                            <div class="compiler-notes-text">
+                                <strong>Референтни периоди:</strong> EURIBOR е представен със средномесечни стойности за предходния календарен месец. Данните за лихвените проценти по жилищни кредити са за последния наличен отчетен месец съгласно календара на ЕЦБ, която публикува банковата лихвена статистика на 23-тия работен ден след края на съответния месец.
+                            </div>
+                            <div class="compiler-notes-text">
+                                <strong>Уточнение:</strong> Информацията и анализите имат информативен характер и не представляват индивидуална препоръка за кредитно решение. Условията по конкретен кредит зависят от оценката на кредитополучателя и приложимите изисквания на съответната банка.
+                            </div>
                         </div>
-                        <!-- Footer Page 9 -->
-                        <footer class="pdf-footer footer-page-9">
+                        <!-- Footer Page 10 -->
+                        <footer class="pdf-footer footer-page-10">
                             <div class="footer-bottom-line">
+                                <div class="footer-meta-left">
+                                    <span>Брой <span class="lblDocNum">07 / 2026</span></span>
+                                </div>
                                 <div class="footer-info">
-                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP9"></span>
+                                    <span class="footer-brand-title brand-footer-mini" id="brandFooterP10"></span>
                                     <span class="footer-brand-slogan brand-footer-slogan"></span>
                                 </div>
-                                <div class="footer-page-num">Страница 9 от 9</div>
+                                <div class="footer-page-num">Страница 10 от 10</div>
                             </div>
                         </footer>
                     </div>
@@ -719,7 +837,7 @@
 
     <!-- Script imports -->
     <script src="brands.js?v=4"></script>
-    <script src="app.js?v=22"></script>
+    <script src="app.js?v=23"></script>
     <script>
         // Initialize lucide icons
         lucide.createIcons();

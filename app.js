@@ -16,6 +16,8 @@ const fileStatus = document.getElementById('fileStatus');
 const fileNameSpan = document.getElementById('fileName');
 const dataSourceBadge = document.getElementById('dataSourceBadge');
 const dataSourceText = document.getElementById('dataSourceText');
+const archiveSelector = document.getElementById('archiveSelector');
+const btnRefreshData = document.getElementById('btnRefreshData');
 
 // Inputs
 const inputNum = document.getElementById('bulletinNum');
@@ -56,41 +58,46 @@ const monthNamesBG = [
     'юли', 'август', 'септември', 'октомври', 'ноември', 'декември'
 ];
 
-// Sequence of 7 indicator pages (Pages 3 to 9)
+// Sequence of 8 indicator pages (Pages 3 to 10)
 const INDICATOR_SEQUENCE = [
     {
-        key: 'rate',
+        key: 'aprc',
         pageNum: 3,
+        defaultCommentary: 'Годишният процент на разходите (APRC / ГПР) по нови жилищни кредити отразява реалната обща цена за кредитополучателя, включително лихвата, комисионите и всички съпътстващи разходи съгласно методологията на ЕЦБ (MIR A2C) и БНБ.'
+    },
+    {
+        key: 'rate',
+        pageNum: 4,
         defaultCommentary: 'Средната цена на новите жилищни кредити (Cost of Borrowing) отразява реално договорените лихвени проценти по всички видове новоотпуснати ипотечни заеми за домакинства.'
     },
     {
         key: 'fix_f',
-        pageNum: 4,
+        pageNum: 5,
         defaultCommentary: 'Лихвени проценти по нови жилищни кредити с плаваща лихва или първоначално фиксиран период до 1 година. В България този сегмент формира преобладаващата част от пазара.'
     },
     {
         key: 'fix_i',
-        pageNum: 5,
+        pageNum: 6,
         defaultCommentary: 'Лихвени проценти по нови жилищни заеми с първоначално фиксиране между 1 и 5 години, предоставящи средносрочна сигурност на месечната вноска.'
     },
     {
         key: 'fix_o',
-        pageNum: 6,
+        pageNum: 7,
         defaultCommentary: 'Лихвени проценти по нови жилищни кредити с първоначален период на фиксиране между 5 и 10 години.'
     },
     {
         key: 'fix_p',
-        pageNum: 7,
+        pageNum: 8,
         defaultCommentary: 'Дългосрочно фиксирани лихвени проценти за период над 10 години, типични за пазари като Франция, Германия, Белгия и Нидерландия.'
     },
     {
         key: 'loan_growth_yoy',
-        pageNum: 8,
+        pageNum: 9,
         defaultCommentary: 'Годишен темп на прираст на общата наличност (салда) по жилищни кредити за домакинства, коригиран за прекласификации и трансакции (BSI статистика).'
     },
     {
         key: 'rate_outstanding',
-        pageNum: 9,
+        pageNum: 10,
         defaultCommentary: 'Среднопретеглен лихвен процент по цялата съществуваща наличност (салда) от жилищни заеми, отразяващ реалната тежест върху обслужваните от домакинствата кредити.'
     }
 ];
@@ -295,7 +302,7 @@ function renderCoverPage(jsonData) {
     if (coverDataDate) coverDataDate.innerText = lastDateStr;
 
     const coverContactText = document.getElementById('coverContactText');
-    if (coverContactText && b?.coverContact) coverContactText.innerText = b.coverContact;
+    if (coverContactText && b?.coverContact) coverContactText.innerHTML = b.coverContact;
 }
 
 // --------------------------------------------------------------------------
@@ -315,6 +322,7 @@ function renderPage2(jsonData) {
     ecbMapping.forEach(item => {
         const valEl = document.getElementById(`${item.id}-val`);
         const deltaEl = document.getElementById(`${item.id}-delta`);
+        const dateEl = document.getElementById(`${item.id}-date`);
         if (valEl) {
             valEl.innerText = item.data?.value !== null && item.data?.value !== undefined ? `${item.data.value.toFixed(2)} %` : 'н/д';
         }
@@ -322,6 +330,12 @@ function renderPage2(jsonData) {
             const dObj = formatDelta(item.data?.d1m);
             deltaEl.innerText = dObj.text;
             deltaEl.className = `kpi-delta ${dObj.cssClass}`;
+        }
+        if (dateEl) {
+            const effDate = item.data?.effective_from || ecb.effective_date;
+            if (effDate) {
+                dateEl.innerText = `в сила от ${effDate}`;
+            }
         }
     });
 
@@ -404,9 +418,9 @@ function renderIndicatorPage(indCfg, jsonData) {
             tr.className = 'highlight-row';
         }
 
-        // Col 1: Country Name (with BG* on Page 3)
+        // Col 1: Country Name (with BG* on Page 3/4)
         const tdCountry = document.createElement('td');
-        const isBgWithStar = (indKey === 'rate' && code === 'BG' && bgHistorySource);
+        const isBgWithStar = ((indKey === 'rate' || indKey === 'aprc') && code === 'BG' && bgHistorySource);
         const codeDisplay = isBgWithStar ? 'BG*' : code;
         tdCountry.innerHTML = `<strong>${escapeHTML(name)}</strong><span style="font-size: 7px; color: #64748b; margin-left: 3px;">${codeDisplay}</span>`;
         tr.appendChild(tdCountry);
@@ -543,7 +557,7 @@ function renderIndicatorPage(indCfg, jsonData) {
     }
 
     if (footnoteEl) {
-        if (indKey === 'rate') {
+        if (indKey === 'rate' || indKey === 'aprc') {
             footnoteEl.innerText = '* България: до 12/2025 г. по данни на БНБ (конструиран ред в евро); от 01/2026 г. по данни на ЕЦБ.';
             footnoteEl.style.display = 'block';
         } else if (hasLowVolume) {
@@ -572,21 +586,19 @@ function renderIndicatorChart(indKey, countries, isGrowth = false) {
     const bgBarColor = '#3EA93F'; // ВИНАГИ зелено за България (BG) за всички брандове
     const u2BarColor = '#DC2626'; // ВИНАГИ червено за Еврозоната (U2)
 
-    // Сортиране от най-голямото към най-малкото (низходящо). Липсващите стойности отиват в края.
-    const chartItems = countries.map(c => {
-        const v = c.indicators?.[indKey]?.value;
-        return {
-            code: c.code,
-            value: (v !== null && v !== undefined) ? v : null
-        };
-    });
+    // Филтрираме държавите без данни (null / undefined), за да не влизат в графиката
+    const chartItems = countries
+        .map(c => {
+            const v = c.indicators?.[indKey]?.value;
+            return {
+                code: c.code,
+                value: (v !== null && v !== undefined) ? v : null
+            };
+        })
+        .filter(item => item.value !== null);
 
-    chartItems.sort((a, b) => {
-        if (a.value === null && b.value === null) return 0;
-        if (a.value === null) return 1;
-        if (b.value === null) return -1;
-        return b.value - a.value;
-    });
+    // Сортиране от най-голямото към най-малкото (низходящо)
+    chartItems.sort((a, b) => b.value - a.value);
 
     const labels = chartItems.map(c => c.code);
     const dataValues = chartItems.map(c => c.value);
@@ -720,21 +732,18 @@ function updateBrandVisuals() {
     const coverSubtitle = document.getElementById('coverSubtitle');
     if (coverSubtitle && b.coverSubtitle) coverSubtitle.innerText = b.coverSubtitle;
 
-    const coverContactText = document.getElementById('coverContactText');
-    if (coverContactText && b.coverContact) coverContactText.innerText = b.coverContact;
-
-    // 2. Pages 2 to 9 Mini Headers & Footers
-    for (let p = 2; p <= 9; p++) {
+    // 2. Pages 1 to 10 Headers & Footers
+    for (let p = 1; p <= 10; p++) {
         const miniLogo = document.getElementById(`brandMiniLogoP${p}`);
         if (miniLogo) miniLogo.innerHTML = b.miniLogoHtml || b.logoHtml;
 
         const miniFooter = document.getElementById(`brandFooterP${p}`);
         if (miniFooter) {
-            miniFooter.innerText = b.footerMini || b.footerTextPage1;
+            miniFooter.innerHTML = b.footerMini || b.footerTextPage1;
         }
     }
 
-    // Mini doc titles across pages 2 to 9
+    // Mini doc titles across pages 2 to 10
     document.querySelectorAll('.brandDocTitleMini').forEach(el => {
         el.innerText = b.docTitle;
     });
@@ -829,6 +838,11 @@ function saveDraft() {
         inputAuthor: inputAuthor ? inputAuthor.value : '',
         coverTocHtml: coverTocList ? coverTocList.innerHTML : '',
         coverLeadHtml: coverLead ? coverLead.innerHTML : '',
+        coverKpis: {
+            rate: document.getElementById('coverKpiRate')?.innerText || '',
+            spread: document.getElementById('coverKpiSpread')?.innerText || '',
+            growth: document.getElementById('coverKpiGrowth')?.innerText || ''
+        },
         summaryText: inputText ? inputText.value : '',
         lblSummaryHtml: lblSummaryText ? lblSummaryText.innerHTML : '',
         commentaries: commentaries,
@@ -882,7 +896,7 @@ function restoreDraft(key) {
         }
         if (draft.inputAuthor && inputAuthor) inputAuthor.value = draft.inputAuthor;
 
-        // 3. Cover TOC & Lead
+        // 3. Cover TOC, Lead & KPIs
         const coverTocList = document.getElementById('coverTocList');
         if (draft.coverTocHtml && coverTocList) {
             coverTocList.innerHTML = draft.coverTocHtml;
@@ -890,6 +904,14 @@ function restoreDraft(key) {
         const coverLead = document.getElementById('coverLead');
         if (draft.coverLeadHtml && coverLead) {
             coverLead.innerHTML = draft.coverLeadHtml;
+        }
+        if (draft.coverKpis) {
+            const kRate = document.getElementById('coverKpiRate');
+            const kSpread = document.getElementById('coverKpiSpread');
+            const kGrowth = document.getElementById('coverKpiGrowth');
+            if (kRate && draft.coverKpis.rate) kRate.innerText = draft.coverKpis.rate;
+            if (kSpread && draft.coverKpis.spread) kSpread.innerText = draft.coverKpis.spread;
+            if (kGrowth && draft.coverKpis.growth) kGrowth.innerText = draft.coverKpis.growth;
         }
 
         // 4. Summary on Page 2
@@ -1011,6 +1033,18 @@ function setupEventListeners() {
         });
     }
 
+    // Cover KPI values inline edit
+    ['coverKpiRate', 'coverKpiSpread', 'coverKpiGrowth'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.setAttribute('contenteditable', 'true');
+            el.addEventListener('blur', () => {
+                debounceSaveDraft();
+                checkPagesOverflow();
+            });
+        }
+    });
+
     if (inputText) {
         inputText.addEventListener('input', (e) => {
             if (lblSummaryText) lblSummaryText.innerText = e.target.value;
@@ -1115,6 +1149,30 @@ function setupEventListeners() {
         });
     }
 
+    // Archive selector
+    if (archiveSelector) {
+        archiveSelector.addEventListener('change', (e) => {
+            const val = e.target.value;
+            let path = './data/bulletin_data.json';
+            if (val && val !== 'current') {
+                path = `./data/archive/${val}.json`;
+            }
+            loadBulletinData(path, false);
+        });
+    }
+
+    // Refresh button
+    if (btnRefreshData) {
+        btnRefreshData.addEventListener('click', () => {
+            const val = archiveSelector ? archiveSelector.value : 'current';
+            let path = './data/bulletin_data.json';
+            if (val && val !== 'current') {
+                path = `./data/archive/${val}.json`;
+            }
+            loadBulletinData(path, true);
+        });
+    }
+
     // PDF buttons
     if (btnExportPDF) {
         btnExportPDF.addEventListener('click', () => generatePDF());
@@ -1128,6 +1186,50 @@ function setupEventListeners() {
     window.addEventListener('resize', () => {
         checkPagesOverflow();
     });
+}
+
+async function loadBulletinData(sourcePath, showRefreshFeedback = false) {
+    try {
+        if (showRefreshFeedback && btnRefreshData) {
+            btnRefreshData.disabled = true;
+            btnRefreshData.innerHTML = `<i data-lucide="loader-2" class="spin" style="width: 13px; height: 13px;"></i> Опресняване...`;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        const timestamp = Date.now();
+        const url = sourcePath.includes('?') ? `${sourcePath}&_t=${timestamp}` : `${sourcePath}?_t=${timestamp}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const jsonData = await res.json();
+
+        if (dataSourceText) {
+            const period = jsonData.meta?.period ? ` (${formatPeriodToMonthYear(jsonData.meta.period)})` : '';
+            const baseName = sourcePath.split('/').pop().split('?')[0];
+            dataSourceText.innerText = `Източник: ${baseName}${period}`;
+        }
+
+        renderBulletinDocument(jsonData);
+        restoreDraft(getDraftStorageKey());
+
+        if (showRefreshFeedback && draftStatusBadge) {
+            draftStatusBadge.innerText = 'Данните са опреснени';
+            draftStatusBadge.style.color = '#10b981';
+            setTimeout(() => {
+                const now = new Date();
+                const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                draftStatusBadge.innerText = `Последно опресняване ${timeStr}`;
+            }, 3000);
+        }
+    } catch (err) {
+        console.error('Error loading bulletin data:', err);
+        alert('Грешка при зареждане на данните: ' + err.message);
+    } finally {
+        if (showRefreshFeedback && btnRefreshData) {
+            btnRefreshData.disabled = false;
+            btnRefreshData.innerHTML = `<i data-lucide="rotate-cw" style="width: 13px; height: 13px;"></i> Опресни данни`;
+            if (window.lucide) lucide.createIcons();
+        }
+    }
 }
 
 function handleUploadedFile(file) {
@@ -1148,14 +1250,14 @@ function handleUploadedFile(file) {
         reader.readAsText(file);
     } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xlsm')) {
         if (dataSourceText) {
-            dataSourceText.innerHTML = `Източник: ${file.name} <span style="color: #f59e0b; font-weight: 700;">(Legacy - само Стр. 3)</span>`;
+            dataSourceText.innerHTML = `Източник: ${file.name} <span style="color: #f59e0b; font-weight: 700;">(Legacy - само Стр. 4)</span>`;
         }
-        alert('Забележка: Зареждането от Excel поддържа само показател rate (Стр. 3). Препоръчва се използването на bulletin_data.json за всички 9 страници.');
+        alert('Забележка: Зареждането от Excel поддържа само показател rate (Стр. 4). Препоръчва се използването на bulletin_data.json за всички 10 страници.');
     }
 }
 
 // --------------------------------------------------------------------------
-// PDF Export (Guarantees exactly 9 A4 pages without blank/trailing pages)
+// PDF Export (Guarantees exactly 10 A4 pages without blank/trailing pages)
 // --------------------------------------------------------------------------
 async function generatePDF(brandOverride) {
     const targetBrand = brandOverride || currentBrand;
@@ -1238,23 +1340,8 @@ function initApp() {
     setupEventListeners();
     updateBrandVisuals();
 
-    // Auto-fetch bulletin_data.json
-    fetch('./data/bulletin_data.json')
-        .then(res => {
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            return res.json();
-        })
-        .then(jsonData => {
-            if (dataSourceText) {
-                const period = jsonData.meta?.period ? ` (${formatPeriodToMonthYear(jsonData.meta.period)})` : '';
-                dataSourceText.innerText = `Източник: bulletin_data.json${period}`;
-            }
-            renderBulletinDocument(jsonData);
-            restoreDraft(getDraftStorageKey());
-        })
-        .catch(err => {
-            console.warn('Could not auto-load ./data/bulletin_data.json:', err);
-        });
+    // Auto-fetch bulletin_data.json via loadBulletinData
+    loadBulletinData('./data/bulletin_data.json');
 }
 
 // Start application

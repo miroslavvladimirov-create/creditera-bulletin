@@ -52,23 +52,29 @@ const BRANDS = {
     },
     creditera: {
         id: 'creditera',
-        name: 'CreditERA',
-        companyName: 'CreditERA',
+        name: 'CreditERA.bg',
+        companyName: 'CreditERA.bg',
         headerTitle: 'ИПОТЕЧЕН БЮЛЕТИН',
-        headerSubtitle: 'CreditERA',
+        headerSubtitle: 'CreditERA.bg',
         docTitle: 'ИПОТЕЧЕН БЮЛЕТИН',
         docSubText: 'Ипотечен пазарен бюлетин • Брой',
         coverTitle: 'ИПОТЕЧЕН<br>БЮЛЕТИН',
         coverSubtitle: 'Лихвена среда и жилищно кредитиране в България и еврозоната',
         slogan: 'Ипотечният БРОКЕР, с когото пестиш',
         logoHtml: `
-            <img src="assets/creditera-logo.png" alt="CreditERA Logo" class="pdf-logo-img" style="height: 40px; width: auto; max-width: 140px; object-fit: contain;">
+            <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center;">
+                <span class="pdf-logo-text" style="font-family: var(--font-heading); font-size: 16pt; font-weight: 800; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase;">CREDITERA.BG</span>
+            </a>
         `,
         miniLogoHtml: `
-            <img src="assets/creditera-logo.png" alt="CreditERA Logo" style="height: 18px; width: auto; max-width: 90px; object-fit: contain;">
+            <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" class="pdf-mini-logo-link" style="text-decoration: none; color: #ffffff; display: inline-flex; align-items: center; line-height: 1;">
+                <span class="pdf-mini-brand-text" style="font-family: var(--font-heading); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #ffffff; line-height: 1;">CREDITERA.BG</span>
+            </a>
         `,
         coverLogoHtml: `
-            <div class="creditera-cover-brand-title" style="font-family: 'Montserrat', sans-serif; font-size: 26pt; font-weight: 800; color: #ffffff; letter-spacing: 2px; text-transform: uppercase; line-height: 1;">CREDITERA</div>
+            <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit; display: block;">
+                <div class="creditera-cover-brand-title" style="font-family: var(--font-heading); font-size: 26pt; font-weight: 800; color: #ffffff; letter-spacing: 2px; text-transform: uppercase; line-height: 1;">CREDITERA.BG</div>
+            </a>
         `,
         palette: {
             primary: '#202E64',
@@ -78,17 +84,17 @@ const BRANDS = {
             bgLight: '#F1F8F1',
             textDark: '#202E64'
         },
-        website: 'www.creditera.bg',
-        coverContact: 'CreditERA • Ипотечни и кредитни консултации • www.creditera.bg',
-        footerTextPage1: 'CreditERA • Ипотечни и кредитни консултации • www.creditera.bg',
-        footerMini: 'CREDITERA',
-        disclaimer: 'Отказ от отговорност: Представените данни имат информативен характер и отразяват официалната статистика на ЕЦБ и БНБ към момента на съставяне на бюлетина. CreditERA не носи отговорност за промени в тарифите на банковите институции.',
+        website: 'https://creditera.bg/',
+        coverContact: '<a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; font-weight: 600;">CreditERA.bg</a> • Ипотечни и кредитни консултации • <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">www.creditera.bg</a>',
+        footerTextPage1: '<a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; font-weight: 600;">CreditERA.bg</a> • Ипотечни и кредитни консултации • <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">www.creditera.bg</a>',
+        footerMini: '<a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">CREDITERA.BG</a>',
+        disclaimer: 'Отказ от отговорност: Представените данни имат информативен характер и отразяват официалната статистика на ЕЦБ и БНБ към момента на съставяне на бюлетина. CreditERA.bg не носи отговорност за промени в тарифите на банковите институции.',
         compiler: {
             name: 'гл. ас. д-р Мирослав Владимиров',
             title: '',
             email: 'mvladimirov@creditera.bg'
         },
-        pdfPrefix: 'CreditERA_Бюлетин'
+        pdfPrefix: 'CreditERA.bg_Бюлетин'
     }
 };
 
