@@ -9,26 +9,25 @@ const BRANDS = {
         docSubText: 'Ипотечен пазарен бюлетин • Брой',
         coverTitle: 'ИНФОРМАЦИОНЕН<br>БЮЛЕТИН',
         coverSubtitle: 'Лихвена среда и жилищно кредитиране в България и еврозоната',
+        slogan: 'Асоциация на кредитните посредници в България',
         logoHtml: `
-            <svg viewBox="0 0 100 100" class="pdf-logo-svg" style="width: 44px; height: 44px;">
-                <path d="M20,80 L20,40 L50,15 L80,40 L80,80 Z" fill="none" stroke="currentColor" stroke-width="5"/>
-                <path d="M35,80 L35,50 L65,50 L65,80" fill="none" stroke="currentColor" stroke-width="5"/>
-                <circle cx="50" cy="50" r="10" fill="var(--color-accent)"/>
-            </svg>
+            <a href="https://www.acib.bg/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: inline-flex; align-items: center;">
+                <img src="assets/akpb-logo.png" alt="АКПБ" class="pdf-logo-img" style="height: 38px; width: auto; object-fit: contain; display: block;" />
+            </a>
         `,
         miniLogoHtml: `
-            <svg viewBox="0 0 100 100" class="pdf-mini-logo-svg" style="width: 22px; height: 22px;">
-                <path d="M20,80 L20,40 L50,15 L80,40 L80,80 Z" fill="none" stroke="currentColor" stroke-width="5"/>
-                <path d="M35,80 L35,50 L65,50 L65,80" fill="none" stroke="currentColor" stroke-width="5"/>
-                <circle cx="50" cy="50" r="10" fill="var(--color-accent)"/>
-            </svg>
+            <a href="https://www.acib.bg/" target="_blank" rel="noopener noreferrer" class="pdf-mini-logo-link" style="text-decoration: none; display: inline-flex; align-items: center; line-height: 1;">
+                <img src="assets/akpb-logo.png" alt="АКПБ" class="pdf-mini-logo-img" style="height: 22px; width: auto; object-fit: contain; display: block;" />
+            </a>
         `,
         coverLogoHtml: `
-            <svg viewBox="0 0 100 100" class="pdf-cover-logo-svg" style="width: 60px; height: 60px; color: var(--color-primary);">
-                <path d="M20,80 L20,40 L50,15 L80,40 L80,80 Z" fill="none" stroke="currentColor" stroke-width="5"/>
-                <path d="M35,80 L35,50 L65,50 L65,80" fill="none" stroke="currentColor" stroke-width="5"/>
-                <circle cx="50" cy="50" r="10" fill="var(--color-accent)"/>
-            </svg>
+            <a href="https://www.acib.bg/" target="_blank" rel="noopener noreferrer" class="akpb-cover-logo-link" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 14px;">
+                <img src="assets/akpb-logo.png" alt="АКПБ" class="akpb-cover-logo-img" style="height: 52px; width: auto; object-fit: contain; display: block;" />
+                <div class="akpb-cover-brand-text" style="display: flex; flex-direction: column; justify-content: center; text-align: left; border-left: 2px solid #b4c1d2; padding-left: 12px;">
+                    <div style="font-family: var(--font-heading); font-size: 11pt; font-weight: 800; color: #0b2545; letter-spacing: 0.6px; text-transform: uppercase; line-height: 1.2;">АСОЦИАЦИЯ НА КРЕДИТНИТЕ ПОСРЕДНИЦИ</div>
+                    <div style="font-family: var(--font-heading); font-size: 9.5pt; font-weight: 700; color: #4a6282; letter-spacing: 1.2px; text-transform: uppercase; line-height: 1.2;">В БЪЛГАРИЯ</div>
+                </div>
+            </a>
         `,
         palette: {
             primary: '#0B2545',
@@ -38,10 +37,10 @@ const BRANDS = {
             bgLight: '#F4F7F9',
             textDark: '#1F2937'
         },
-        website: 'www.acib.bg',
-        coverContact: 'АКПБ • Асоциация на кредитните посредници в България • www.acib.bg',
-        footerTextPage1: 'АКПБ • Асоциация на кредитните посредници в България • www.acib.bg',
-        footerMini: 'АКПБ • Асоциация на кредитните посредници в България • www.acib.bg',
+        website: 'https://www.acib.bg/',
+        coverContact: '<a href="https://www.acib.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; font-weight: 600;">АКПБ</a> • Асоциация на кредитните посредници в България • <a href="https://www.acib.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">www.acib.bg</a>',
+        footerTextPage1: '<a href="https://www.acib.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; font-weight: 600;">АКПБ</a> • Асоциация на кредитните посредници в България • <a href="https://www.acib.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">www.acib.bg</a>',
+        footerMini: '<a href="https://www.acib.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">АКПБ • www.acib.bg</a>',
         disclaimer: 'Отказ от отговорност: Представените данни имат информативен характер и отразяват официалната статистика на ЕЦБ и БНБ към момента на съставяне на бюлетина. АКПБ не носи отговорност за промени в тарифите на банковите институции.',
         compiler: {
             name: 'гл. ас. д-р Мирослав Владимиров',
