@@ -210,6 +210,13 @@ function renderBulletinDocument(jsonData, isRestoringDraft = false) {
         const formattedMY = formatPeriodToMonthYear(currentMeta.period);
         if (inputMonth) inputMonth.value = formattedMY;
         lblDocMonths.forEach(el => el.innerText = formattedMY);
+
+        const parts = currentMeta.period.split('-');
+        if (parts.length >= 2) {
+            const issueNum = `${parts[1]} / ${parts[0]}`;
+            if (inputNum) inputNum.value = issueNum;
+            lblDocNums.forEach(el => el.innerText = issueNum);
+        }
     }
 
     // 2. Render Page 1 (Cover Page)
@@ -1333,12 +1340,34 @@ async function generateBothPDFs() {
     }
 }
 
+async function initArchiveSelector() {
+    if (!archiveSelector) return;
+    try {
+        const res = await fetch('./data/archive/index.json?_t=' + Date.now());
+        if (res.ok) {
+            const list = await res.json();
+            if (Array.isArray(list) && list.length > 0) {
+                archiveSelector.innerHTML = '';
+                list.forEach((item, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = idx === 0 ? 'current' : item.id;
+                    opt.innerText = item.label;
+                    archiveSelector.appendChild(opt);
+                });
+            }
+        }
+    } catch (e) {
+        console.warn('Could not load archive index dynamically:', e);
+    }
+}
+
 // ==========================================================================
 // Initialization
 // ==========================================================================
 function initApp() {
     setupEventListeners();
     updateBrandVisuals();
+    initArchiveSelector();
 
     // Auto-fetch bulletin_data.json via loadBulletinData
     loadBulletinData('./data/bulletin_data.json');
@@ -1346,3 +1375,4 @@ function initApp() {
 
 // Start application
 document.addEventListener('DOMContentLoaded', initApp);
+
