@@ -58,46 +58,46 @@ const monthNamesBG = [
     'юли', 'август', 'септември', 'октомври', 'ноември', 'декември'
 ];
 
-// Sequence of 8 indicator pages (Pages 3 to 10)
+// Sequence of 8 indicator pages (Pages 4 to 11)
 const INDICATOR_SEQUENCE = [
     {
         key: 'aprc',
-        pageNum: 3,
+        pageNum: 4,
         defaultCommentary: 'Годишният процент на разходите (APRC / ГПР) по нови жилищни кредити отразява реалната обща цена за кредитополучателя, включително лихвата, комисионите и всички съпътстващи разходи съгласно методологията на ЕЦБ (MIR A2C) и БНБ.'
     },
     {
         key: 'rate',
-        pageNum: 4,
-        defaultCommentary: 'Средната цена на новите жилищни кредити (Cost of Borrowing) отразява реално договорените лихвени проценти по всички видове новоотпуснати ипотечни заеми за домакинства.'
+        pageNum: 5,
+        defaultCommentary: 'Показателят обобщава лихвите по новите жилищни кредити с различна продължителност на фиксиране, претеглени според обема им.'
     },
     {
         key: 'fix_f',
-        pageNum: 5,
+        pageNum: 6,
         defaultCommentary: 'Лихвени проценти по нови жилищни кредити с плаваща лихва или първоначално фиксиран период до 1 година. В България този сегмент формира преобладаващата част от пазара.'
     },
     {
         key: 'fix_i',
-        pageNum: 6,
+        pageNum: 7,
         defaultCommentary: 'Лихвени проценти по нови жилищни заеми с първоначално фиксиране между 1 и 5 години, предоставящи средносрочна сигурност на месечната вноска.'
     },
     {
         key: 'fix_o',
-        pageNum: 7,
+        pageNum: 8,
         defaultCommentary: 'Лихвени проценти по нови жилищни кредити с първоначален период на фиксиране между 5 и 10 години.'
     },
     {
         key: 'fix_p',
-        pageNum: 8,
+        pageNum: 9,
         defaultCommentary: 'Дългосрочно фиксирани лихвени проценти за период над 10 години, типични за пазари като Франция, Германия, Белгия и Нидерландия.'
     },
     {
         key: 'loan_growth_yoy',
-        pageNum: 9,
+        pageNum: 10,
         defaultCommentary: 'Годишен темп на прираст на общата наличност (салда) по жилищни кредити за домакинства, коригиран за прекласификации и трансакции (BSI статистика).'
     },
     {
         key: 'rate_outstanding',
-        pageNum: 10,
+        pageNum: 11,
         defaultCommentary: 'Среднопретеглен лихвен процент по цялата съществуваща наличност (салда) от жилищни заеми, отразяващ реалната тежест върху обслужваните от домакинствата кредити.'
     }
 ];
@@ -499,6 +499,9 @@ function renderIndicatorPage(indCfg, jsonData) {
         if (indData.spread_bps === null || indData.spread_bps === undefined) {
             tdSpread.innerText = 'н/д';
             tdSpread.style.color = '#94a3b8';
+        } else if (indKey === 'loan_growth_yoy') {
+            const spreadPp = Number(indData.spread_bps) / 100;
+            tdSpread.innerText = `${spreadPp > 0 ? '+' : ''}${spreadPp.toFixed(2)} п.п.`;
         } else {
             const spreadVal = Math.round(Number(indData.spread_bps));
             tdSpread.innerText = `${spreadVal > 0 ? '+' : ''}${spreadVal} б.т.`;
@@ -739,8 +742,8 @@ function updateBrandVisuals() {
     const coverSubtitle = document.getElementById('coverSubtitle');
     if (coverSubtitle && b.coverSubtitle) coverSubtitle.innerText = b.coverSubtitle;
 
-    // 2. Pages 1 to 10 Headers & Footers
-    for (let p = 1; p <= 10; p++) {
+    // 2. Pages 1 to 11 Headers & Footers
+    for (let p = 1; p <= 11; p++) {
         const miniLogo = document.getElementById(`brandMiniLogoP${p}`);
         if (miniLogo) miniLogo.innerHTML = b.miniLogoHtml || b.logoHtml;
 
@@ -750,7 +753,7 @@ function updateBrandVisuals() {
         }
     }
 
-    // Mini doc titles across pages 2 to 10
+    // Mini doc titles across pages 2 to 11
     document.querySelectorAll('.brandDocTitleMini').forEach(el => {
         el.innerText = b.docTitle;
     });
@@ -972,7 +975,12 @@ function restoreDraft(key) {
                     } else if (colKey === 'value') {
                         targetTd.innerText = `${editedVal.toFixed(2)} %`;
                     } else if (colKey === 'spread_bps') {
-                        targetTd.innerText = `${editedVal > 0 ? '+' : ''}${Math.round(editedVal)} б.т.`;
+                        if (iKey === 'loan_growth_yoy') {
+                            const spreadPp = editedVal / 100;
+                            targetTd.innerText = `${spreadPp > 0 ? '+' : ''}${spreadPp.toFixed(2)} п.п.`;
+                        } else {
+                            targetTd.innerText = `${editedVal > 0 ? '+' : ''}${Math.round(editedVal)} б.т.`;
+                        }
                     } else if (colKey === 'sd24' || colKey === 'z24') {
                         targetTd.innerText = `${editedVal > 0 && colKey === 'z24' ? '+' : ''}${editedVal.toFixed(2)}`;
                     } else {

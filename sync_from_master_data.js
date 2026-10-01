@@ -340,7 +340,7 @@ async function main() {
       source: "ECB Data Portal (SDMX API) / MAP2 & MAP1",
       indicator_labels: {
         aprc: "Годишен процент на разходите (ГПР / APRC)",
-        rate: "Цената на кредита (CoB)",
+        rate: "Композитна цена на кредита (Composite Cost of Borrowing – CoB)",
         fix_f: "Плаваща лихва и до 1 г.",
         fix_i: "Фиксирана лихва над 1 до 5 г.",
         fix_o: "Фиксирана лихва над 5 до 10 г.",

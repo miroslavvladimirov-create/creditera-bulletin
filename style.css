@@ -898,8 +898,114 @@ body[data-brand="creditera"] .pdf-page.cover-page .cover-bottom-row {
     border: 1px solid #bbf7d0;
     border-left: 4px solid var(--color-accent);
     border-radius: 4px;
-    min-height: 80px;
+    min-height: 60px;
     box-sizing: border-box;
+}
+
+/* Overview Section Typography & Layout (Pages 2 & 3) */
+.overview-subtitle {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-top: -6px;
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+}
+
+.overview-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 6px;
+}
+
+.overview-subheading {
+    font-family: var(--font-heading);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--color-primary);
+    border-bottom: 1.5px solid var(--color-accent);
+    padding-bottom: 2px;
+    margin-top: 5px;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.overview-paragraph {
+    font-size: 9.3px;
+    line-height: 1.42;
+    color: #1e293b;
+    text-align: justify;
+    margin: 0 0 4px 0;
+}
+
+/* Custom Overview Tables */
+.overview-table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 8px 0;
+    font-size: 9.2px;
+    border: 1px solid #bbf7d0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.overview-table-custom thead tr {
+    background-color: var(--color-primary, #202E64);
+    color: #ffffff;
+}
+
+.overview-table-custom th {
+    padding: 4px 8px;
+    font-family: var(--font-heading);
+    font-size: 9.2px;
+    font-weight: 700;
+    text-align: left;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.overview-table-custom th:last-child {
+    border-right: none;
+}
+
+.overview-table-custom tbody tr {
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.overview-table-custom tbody tr:nth-child(even) {
+    background-color: #f4fbf5;
+}
+
+.overview-table-custom tbody tr:last-child {
+    border-bottom: none;
+}
+
+.overview-table-custom td {
+    padding: 3.8px 8px;
+    color: #1e293b;
+    border-right: 1px solid #e2e8f0;
+    font-size: 9px;
+}
+
+.overview-table-custom td:last-child {
+    border-right: none;
+}
+
+/* Arrow Styling */
+.arrow-up {
+    color: #ef4444 !important;
+    font-weight: 700;
+}
+
+.arrow-down {
+    color: #22c55e !important;
+    font-weight: 700;
+}
+
+.arrow-flat {
+    color: #64748b !important;
+    font-weight: 700;
 }
 
 /* Cards Grids (Page 1) */
