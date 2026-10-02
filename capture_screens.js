@@ -39,6 +39,10 @@ const executablePath = chromePaths.find(p => fs.existsSync(p));
 
   const p1 = await page.$('#page-1');
   if (p1) await p1.screenshot({ path: path.join(artifactDir, 'page_1_preview.png') });
+  const p2 = await page.$('#page-2');
+  if (p2) await p2.screenshot({ path: path.join(artifactDir, 'page_2_preview.png') });
+  const p3 = await page.$('#page-3');
+  if (p3) await p3.screenshot({ path: path.join(artifactDir, 'page_3_preview.png') });
   const p11 = await page.$('#page-11');
   if (p11) await p11.screenshot({ path: path.join(artifactDir, 'page_11_preview.png') });
   const p12 = await page.$('#page-12');
@@ -49,6 +53,8 @@ const executablePath = chromePaths.find(p => fs.existsSync(p));
     setBrand('creditera');
   });
   await new Promise(r => setTimeout(r, 500));
+  if (p2) await p2.screenshot({ path: path.join(artifactDir, 'page_2_creditera_preview.png') });
+  if (p3) await p3.screenshot({ path: path.join(artifactDir, 'page_3_creditera_preview.png') });
   if (p12) await p12.screenshot({ path: path.join(artifactDir, 'page_12_creditera_preview.png') });
 
   console.log('Screenshots saved successfully');
