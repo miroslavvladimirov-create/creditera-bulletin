@@ -788,8 +788,8 @@ function updateBrandVisuals() {
     const coverSubtitle = document.getElementById('coverSubtitle');
     if (coverSubtitle && b.coverSubtitle) coverSubtitle.innerText = b.coverSubtitle;
 
-    // 2. Pages 1 to 11 Headers & Footers
-    for (let p = 1; p <= 11; p++) {
+    // 2. Pages 1 to 12 Headers & Footers
+    for (let p = 1; p <= 12; p++) {
         const miniLogo = document.getElementById(`brandMiniLogoP${p}`);
         if (miniLogo) miniLogo.innerHTML = b.miniLogoHtml || b.logoHtml;
 
@@ -799,7 +799,7 @@ function updateBrandVisuals() {
         }
     }
 
-    // Mini doc titles across pages 2 to 11
+    // Mini doc titles across pages 2 to 12
     document.querySelectorAll('.brandDocTitleMini').forEach(el => {
         el.innerText = b.docTitle;
     });
