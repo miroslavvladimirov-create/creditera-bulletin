@@ -62,31 +62,31 @@ const BRANDS = {
         slogan: 'Ипотечният БРОКЕР, с когото пестиш',
         logoHtml: `
             <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center;">
-                <span class="pdf-logo-text" style="font-family: var(--font-heading); font-size: 16pt; font-weight: 800; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase;">CREDITERA.BG</span>
+                <span class="pdf-logo-text creditera-brand-inline" style="font-family: var(--font-heading); font-size: 16pt; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase;"><span class="brand-credit" style="color: #ffffff;">CREDIT</span><span class="brand-era" style="color: #202E64;">ERA.BG</span></span>
             </a>
         `,
         miniLogoHtml: `
-            <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" class="pdf-mini-logo-link" style="text-decoration: none; color: #ffffff; display: inline-flex; align-items: center; line-height: 1;">
-                <span class="pdf-mini-brand-text" style="font-family: var(--font-heading); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #ffffff; line-height: 1;">CREDITERA.BG</span>
+            <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" class="pdf-mini-logo-link" style="text-decoration: none; display: inline-flex; align-items: center; line-height: 1;">
+                <span class="pdf-mini-brand-text creditera-brand-inline" style="font-family: var(--font-heading); font-size: 11px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; line-height: 1;"><span class="brand-credit" style="color: #ffffff;">CREDIT</span><span class="brand-era" style="color: #202E64;">ERA.BG</span></span>
             </a>
         `,
         coverLogoHtml: `
             <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit; display: block;">
-                <div class="creditera-cover-brand-title" style="font-family: var(--font-heading); font-size: 26pt; font-weight: 800; color: #ffffff; letter-spacing: 2px; text-transform: uppercase; line-height: 1;">CREDITERA.BG</div>
+                <div class="creditera-cover-brand-title creditera-brand-inline" style="font-family: var(--font-heading); font-size: 26pt; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; line-height: 1;"><span class="brand-credit" style="color: #ffffff;">CREDIT</span><span class="brand-era" style="color: #202E64;">ERA.BG</span></div>
             </a>
         `,
         palette: {
             primary: '#202E64',
             primaryLight: '#2c3e80',
-            accent: '#3EA93F',
+            accent: '#3EA93D',
             accentDark: '#328c33',
             bgLight: '#F1F8F1',
             textDark: '#202E64'
         },
         website: 'https://creditera.bg/',
-        coverContact: '<a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; font-weight: 600;">CreditERA.bg</a> • Ипотечни и кредитни консултации • <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">www.creditera.bg</a>',
-        footerTextPage1: '<a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; font-weight: 600;">CreditERA.bg</a> • Ипотечни и кредитни консултации • <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">www.creditera.bg</a>',
-        footerMini: '<a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">CREDITERA.BG</a>',
+        coverContact: '<a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; font-weight: 600;"><span class="creditera-brand-inline brand-on-light" style="font-family: var(--font-heading); font-weight: 800;"><span class="brand-credit" style="color: #3EA93D;">CREDIT</span><span class="brand-era" style="color: #202E64;">ERA.BG</span></span></a> • Ипотечни и кредитни консултации • <a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline;">www.creditera.bg</a>',
+        footerTextPage1: '<a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center;"><span class="creditera-brand-inline" style="font-family: var(--font-heading); font-size: 11.5px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase;"><span class="brand-credit" style="color: #ffffff;">CREDIT</span><span class="brand-era" style="color: #202E64;">ERA.BG</span></span></a>',
+        footerMini: '<a href="https://creditera.bg/" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit; display: inline-flex; align-items: center;"><span class="creditera-brand-inline" style="font-family: var(--font-heading); font-size: 11.5px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase;"><span class="brand-credit" style="color: #ffffff;">CREDIT</span><span class="brand-era" style="color: #202E64;">ERA.BG</span></span></a>',
         disclaimer: 'Отказ от отговорност: Представените данни имат информативен характер и отразяват официалната статистика на ЕЦБ и БНБ към момента на съставяне на бюлетина. CreditERA.bg не носи отговорност за промени в тарифите на банковите институции.',
         compiler: {
             name: 'гл. ас. д-р Мирослав Владимиров',

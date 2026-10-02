@@ -42,16 +42,16 @@
                             <i data-lucide="shield"></i> АКПБ
                         </button>
                         <button type="button" id="btnBrandCreditera" class="btn brand-btn active" data-brand="creditera">
-                            <i data-lucide="award"></i> CreditERA.bg
+                            <i data-lucide="award"></i> <span class="creditera-brand-inline" style="font-size: 11px;"><span class="brand-credit">CREDIT</span><span class="brand-era">ERA.BG</span></span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Step 2: Metadata Configuration & Archive -->
                 <div class="control-section">
-                    <h3><i data-lucide="file-text"></i> 2. Месец и архив</h3>
+                    <h3><i data-lucide="file-text"></i> 2. Издание, дати и архив</h3>
                     <div class="form-group">
-                        <label for="archiveSelector">Архив на броевете</label>
+                        <label for="archiveSelector">Архив на данните (ЕЦБ/БНБ)</label>
                         <select id="archiveSelector" style="width: 100%; padding: 8px 10px; background: rgba(255,255,255,0.08); border: 1px solid var(--sidebar-border); border-radius: 6px; color: #ffffff; font-size: 13px; font-weight: 500; outline: none; margin-bottom: 8px; cursor: pointer;">
                             <option value="current" selected>Август 2026 г. (Брой 1 / 2026)</option>
                             <option value="2026-07">Юли 2026 г.</option>
@@ -66,11 +66,21 @@
                     </div>
                     <div class="form-group" style="margin-top: 8px;">
                         <label for="bulletinNum">Брой №</label>
-                        <input type="text" id="bulletinNum" value="1 / 2026">
+                        <input type="text" id="bulletinNum" value="1 / 2026" placeholder="напр. 1 / 2026">
                     </div>
                     <div class="form-group" style="margin-top: 8px;">
-                        <label for="bulletinMonth">Период (Месец)</label>
-                        <input type="text" id="bulletinMonth" value="Август 2026 г.">
+                        <label for="bulletinPublishMonth" style="display: flex; align-items: center; justify-content: space-between;">
+                            <span>Месец на издаване</span>
+                            <span style="font-size: 10px; color: var(--color-gold);">Публикация</span>
+                        </label>
+                        <input type="text" id="bulletinPublishMonth" value="Октомври 2026 г." placeholder="напр. Октомври 2026 г.">
+                    </div>
+                    <div class="form-group" style="margin-top: 8px;">
+                        <label for="bulletinDataMonth" style="display: flex; align-items: center; justify-content: space-between;">
+                            <span>Период на данните</span>
+                            <span style="font-size: 10px; color: #94a3b8;">Статистика ЕЦБ/БНБ</span>
+                        </label>
+                        <input type="text" id="bulletinDataMonth" value="Август 2026 г." placeholder="напр. Август 2026 г.">
                     </div>
                     <div class="form-group" style="margin-top: 8px;">
                         <label for="bulletinAuthor">Изготвил</label>
@@ -78,33 +88,28 @@
                     </div>
                 </div>
 
-                <!-- Step 3: Page Layout Calibration Sliders -->
+                <!-- Step 3: Document Status & Overview -->
                 <div class="control-section">
-                    <h3><i data-lucide="sliders"></i> 3. Калибрация на страниците (11 x A4)</h3>
-                    <div class="form-group">
-                        <label for="sliderTableFont" style="display: flex; justify-content: space-between;">
-                            <span>Шрифт на таблиците:</span>
-                            <span id="lblTableFont" style="font-weight: 600; color: var(--color-gold);">11.0px</span>
-                        </label>
-                        <input type="range" id="sliderTableFont" min="6.0" max="12.0" step="0.5" value="11.0" style="accent-color: var(--color-gold);">
-                    </div>
-                    <div class="form-group" style="margin-top: 8px;">
-                        <label for="sliderChartHeight" style="display: flex; justify-content: space-between;">
-                            <span>Макс. височина на графиките:</span>
-                            <span id="lblChartHeight" style="font-weight: 600; color: var(--color-gold);">Без лимит</span>
-                        </label>
-                        <input type="range" id="sliderChartHeight" min="100" max="300" step="10" value="300" style="accent-color: var(--color-gold);">
-                    </div>
-                    <div class="form-group" style="margin-top: 8px;">
-                        <label for="sliderSpacing" style="display: flex; justify-content: space-between;">
-                            <span>Отстояния на секциите:</span>
-                            <span id="lblSpacing" style="font-weight: 600; color: var(--color-gold);">12px</span>
-                        </label>
-                        <input type="range" id="sliderSpacing" min="6" max="24" step="2" value="12" style="accent-color: var(--color-gold);">
+                    <h3><i data-lucide="check-circle-2"></i> 3. Статус на документа</h3>
+                    <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
+                            <span style="color: #94a3b8;">Формат:</span>
+                            <span style="font-weight: 700; color: #ffffff;">11 x A4 Portrait</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
+                            <span style="color: #94a3b8;">Статус геометрия:</span>
+                            <span id="docLayoutStatus" style="font-weight: 700; color: #10b981; display: inline-flex; align-items: center; gap: 4px;">
+                                <i data-lucide="check" style="width: 13px; height: 13px;"></i> Без преливане
+                            </span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 6px;">
+                            <span style="color: #94a3b8;">Показатели:</span>
+                            <span style="font-weight: 700; color: var(--color-gold);">8 индикатора (22 страни)</span>
+                        </div>
                     </div>
 
-                    <!-- Overflow Warnings Container -->
-                    <div id="overflowWarnings" class="overflow-warnings-box hidden" style="margin-top: 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 6px; padding: 8px 10px; font-size: 11px; color: #fca5a5;">
+                    <!-- Overflow Warnings Container (Dynamic) -->
+                    <div id="overflowWarnings" class="overflow-warnings-box hidden" style="margin-top: 8px; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; border-radius: 6px; padding: 8px 10px; font-size: 11px; color: #fca5a5;">
                         <div style="font-weight: 700; display: flex; align-items: center; gap: 5px; color: #ef4444;">
                             <i data-lucide="alert-triangle" style="width: 14px; height: 14px;"></i> Внимание: Преливащи страници!
                         </div>
@@ -112,19 +117,17 @@
                     </div>
                 </div>
 
-                <!-- Export & PDF Generation -->
-                <div class="card" style="margin-top: 10px;">
-                    <div class="card-header">
-                        <i data-lucide="file-down"></i> Експорт и печат
-                    </div>
-                    <div class="card-body">
-                        <button id="btnExportPDF" class="btn btn-primary" style="width: 100%;">
+                <!-- Step 4: Export & PDF Generation -->
+                <div class="control-section" style="margin-top: 6px;">
+                    <h3><i data-lucide="file-down"></i> 4. Експорт и печат</h3>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <button id="btnExportPDF" class="btn btn-primary" style="width: 100%; padding: 12px 14px; font-size: 13px; font-weight: 700;">
                             <i data-lucide="file-text"></i> Генерирай PDF (11 стр.)
                         </button>
-                        <button id="btnExportBothPDF" class="btn btn-secondary" style="width: 100%; margin-top: 8px;">
+                        <button id="btnExportBothPDF" class="btn btn-secondary" style="width: 100%; font-size: 12px;">
                             <i data-lucide="files"></i> PDF за двата бранда
                         </button>
-                        <button id="btnClearDraft" class="btn btn-danger" style="width: 100%; margin-top: 8px;">
+                        <button id="btnClearDraft" class="btn btn-danger" style="width: 100%; font-size: 11px; opacity: 0.85;">
                             <i data-lucide="trash-2"></i> Изчисти чернова
                         </button>
                     </div>
@@ -170,9 +173,9 @@
                         <div class="cover-toc-block">
                             <div class="cover-toc-heading">В този брой:</div>
                             <ul class="cover-toc-list" id="coverTocList" contenteditable="true">
-                                <li class="cover-toc-item"><span class="cover-toc-bullet"></span><span>Пазарен обзор и анализ: Основни лихви на ЕЦБ, пазарни индекси и обобщение на тенденциите</span></li>
-                                <li class="cover-toc-item"><span class="cover-toc-bullet"></span><span>Лихви по жилищните кредити: ГПР, композитна цена, плаваща и фиксирани лихви</span></li>
-                                <li class="cover-toc-item"><span class="cover-toc-bullet"></span><span>Динамика и портфейл: Годишен ръст на кредитите и лихва по съществуващи салда</span></li>
+                                <li class="cover-toc-item"><span class="cover-toc-bullet"></span><span>ЕЦБ повиши DFR, MRO и MLF с 25 б.т., в сила от 16.09.2026 г.</span></li>
+                                <li class="cover-toc-item"><span class="cover-toc-bullet"></span><span>Спредът на България спрямо еврозоната се разширява при ГПР, композитната цена и плаващата лихва.</span></li>
+                                <li class="cover-toc-item"><span class="cover-toc-bullet"></span><span>Годишният ръст на жилищните кредити в България е 25.21% при 2.97% за еврозоната.</span></li>
                             </ul>
                         </div>
 
@@ -185,7 +188,7 @@
                             </div>
                             <div class="cover-kpi-item">
                                 <div class="cover-kpi-val" id="coverKpiSpread" contenteditable="true">-118 б.т.</div>
-                                <div class="cover-kpi-label">Разлика спрямо еврозоната</div>
+                                <div class="cover-kpi-label">Спред на композитната цена спрямо еврозоната</div>
                                 <div class="cover-kpi-sub lblKpiPeriodSub">данни за август 2026 г.</div>
                             </div>
                             <div class="cover-kpi-item">
@@ -197,7 +200,7 @@
 
                         <!-- Introductory Lead Text (~3 lines, editable, same style as overview, no box) -->
                         <div class="cover-lead-block" id="coverLead" contenteditable="true">
-                            Месечният ипотечен бюлетин предоставя задълбочен сравнителен анализ на лихвените нива, динамиката на жилищното кредитиране и ключовите макроикономически фактори в България и еврозоната, подпомагайки потребителите и професионалистите при вземането на информирани финансови решения.
+                            ЕЦБ повиши основните си лихви с 25 б.т., а лихвите по новите жилищни кредити в еврозоната нарастват спрямо 3, 6 и 12 месеца. В България композитната цена е 2.42%, а спредът спрямо еврозоната се разширява до −118 б.т.
                         </div>
 
                         <!-- Footer (Page 1) -->
@@ -261,7 +264,7 @@
                                         </div>
                                     </div>
 
-                                    <p class="overview-paragraph" contenteditable="true">На заседанието си на 10 септември 2026 г. Управителният съвет на ЕЦБ повиши трите основни лихви с 25 базисни точки. Новите нива са в сила от 16 септември 2026 г.: депозитно улеснение 2.50%, основни операции по рефинансиране 2.65% и пределно кредитно улеснение 2.90%. Предходното повишение, също с 0.25 п.п., беше през юни 2026 г. На заседанието на 23 юли 2026 г. лихвите бяха запазени без промяна.</p>
+                                    <p class="overview-paragraph" contenteditable="true">На заседанието си на 10 септември 2026 г. Управителният съвет на ЕЦБ повиши трите основни лихви с 25 б.т. От 16 септември 2026 г. лихвата по депозитното улеснение (DFR) е 2.50%, по основните операции по рефинансиране (MRO) – 2.65%, а по пределното кредитно улеснение (MLF) – 2.90%. Предходното повишение, също с 25 б.т., беше през юни 2026 г.; на 23 юли лихвите бяха запазени без промяна.</p>
                                 </div>
 
                                 <!-- 2. Market Benchmarks -->
@@ -308,29 +311,29 @@
                                 <!-- 3. Housing Loans General Overview -->
                                 <div class="overview-block">
                                     <h3 class="overview-subheading">Жилищни кредити — общ преглед</h3>
-                                    <p class="overview-paragraph" contenteditable="true">През август 2026 г. показателите за цената на новите жилищни кредити в еврозоната са по-високи спрямо нивата си отпреди 3, 6 и 12 месеца, а в България са без промяна или по-ниски. Отрицателният спред на България спрямо еврозоната се разширява при ГПР, композитната цена на кредита и плаващата лихва. Годишният ръст на жилищните кредити в България е 25.21% при 2.97% за еврозоната и е по-нисък спрямо стойностите си отпреди 1, 3, 6 и 12 месеца.</p>
+                                    <p class="overview-paragraph" contenteditable="true">През август всички показатели за цената на новите жилищни кредити в еврозоната са по-високи спрямо 3, 6 и 12 месеца. В България композитната цена, плаващата лихва и лихвата по салда са по-ниски, а ГПР е с повишение за 3М и 6М. Спредът спрямо еврозоната се разширява при ГПР, композитната цена и плаващата лихва. Годишният ръст на кредитите е 25.21% при 2.97% за еврозоната.</p>
                                 </div>
 
                                 <!-- 4. APRC -->
                                 <div class="overview-block">
                                     <h3 class="overview-subheading">Годишен процент на разходите (ГПР)</h3>
-                                    <p class="overview-paragraph" contenteditable="true">ГПР по новите жилищни кредити в еврозоната е 3.91%. Той нараства във всички разглеждани периоди: +0.15 п.п. за 3М, +0.25 п.п. за 6М и +0.29 п.п. за 12М. Z-score 24М е +2.12. Z-score 24М показва колко се отклонява текущата стойност от средната за последните 24 месеца, измерено в стандартни отклонения. Стойности над +1.5 означават необичайно високо равнище спрямо собствената динамика на показателя за периода, а стойности под −1.5 – необичайно ниско.</p>
-                                    <p class="overview-paragraph" contenteditable="true">Повишение във всички три периода има в 16 държави. С z-score над +1.5 са Германия (+2.09), Белгия (+2.00), Словакия (+1.93), Словения (+1.88), Италия (+1.80) и Нидерландия (+1.60). Отрицателна промяна за 12М има в Гърция, Ирландия, Хърватия и България, а в Малта е отрицателна за 3М и 6М.</p>
-                                    <p class="overview-paragraph" contenteditable="true">В България ГПР е 2.81%, с промени +0.04 п.п. за 3М, +0.03 п.п. за 6М и −0.05 п.п. за 12М; z-score е −0.02. Спредът спрямо еврозоната (разликата между стойността за България и средната за еврозоната, в базисни точки; 1 б.т. = 0.01 п.п.) се разширява последователно: от −76 б.т. преди 12 месеца до −88 б.т. преди 6 месеца, −99 б.т. преди 3 месеца и −110 б.т. сега.</p>
+                                    <p class="overview-paragraph" contenteditable="true">ГПР в еврозоната е 3.91%, с ръст от +0.15 п.п. за 3М, +0.25 п.п. за 6М и +0.29 п.п. за 12М. Z-score 24M е +2.12; той измерва отклонението на текущата стойност от средната за 24 месеца в стандартни отклонения, като стойности над +1.5 или под −1.5 са статистически нетипични.</p>
+                                    <p class="overview-paragraph" contenteditable="true">Повишение във всички три периода има в 16 държави. С z-score над +1.5 са Германия (+2.09), Белгия (+2.00), Словакия (+1.93), Словения (+1.88), Италия (+1.80) и Нидерландия (+1.60). Отрицателна промяна за 12М има в Гърция, Ирландия, Хърватия и България, а в Малта – за 3М и 6М.</p>
+                                    <p class="overview-paragraph" contenteditable="true">В България ГПР е 2.81%, с промени +0.04 п.п. за 3М, +0.03 п.п. за 6М и −0.05 п.п. за 12М; z-score е −0.02. Спредът спрямо еврозоната (1 б.т. = 0.01 п.п.) се разширява последователно: от −76 б.т. преди 12 месеца до −88 б.т. преди 6 месеца, −99 б.т. преди 3 месеца и −110 б.т. сега.</p>
                                 </div>
 
                                 <!-- 5. Composite Cost of Borrowing -->
                                 <div class="overview-block">
                                     <h3 class="overview-subheading">Композитна цена на кредита (Composite Cost of Borrowing – CoB)</h3>
-                                    <p class="overview-paragraph" contenteditable="true">Показателят обобщава лихвите по новите жилищни кредити с различна продължителност на фиксиране, претеглени според обема им. В еврозоната той е 3.60%, с ръст от +0.12 п.п. за 3М, +0.23 п.п. за 6М и +0.29 п.п. за 12М; z-score е +1.94. Повишение във всички три периода има в 16 държави, като най-голямо е то за 6М в Литва (+0.49 п.п.), Естония (+0.48 п.п.) и Финландия (+0.47 п.п.). С z-score над +1.5 са Германия (+2.22), Белгия (+1.87) и Нидерландия (+1.63). Отрицателна или нулева промяна в по-дългите периоди имат Гърция, Ирландия, Малта, Хърватия и България, като Гърция е със z-score −1.42.</p>
-                                    <p class="overview-paragraph" contenteditable="true">В България композитната цена на кредита е 2.42%, с промени −0.02 п.п. за 3М, −0.05 п.п. за 6М и −0.04 п.п. за 12М; z-score е −1.25. Спредът спрямо еврозоната се разширява последователно: от −85 б.т. преди 12 месеца до −90, −104 и −118 б.т. сега.</p>
+                                    <p class="overview-paragraph" contenteditable="true">Композитната цена в еврозоната е 3.60%, с ръст от +0.12 п.п. за 3М, +0.23 п.п. за 6М и +0.29 п.п. за 12М; z-score е +1.94. Повишение във всички три периода има в 16 държави, най-голямо за 6М в Литва (+0.49 п.п.), Естония (+0.48 п.п.) и Финландия (+0.47 п.п.). С z-score над +1.5 са Германия (+2.22), Белгия (+1.87) и Нидерландия (+1.63). Спад за 12М имат Гърция, Ирландия, Малта и Хърватия.</p>
+                                    <p class="overview-paragraph" contenteditable="true">В България композитната цена е 2.42%, с промени −0.02 п.п. за 3М, −0.05 п.п. за 6М и −0.04 п.п. за 12М; z-score е −1.25. Спредът се разширява последователно: от −85 б.т. преди 12 месеца до −90, −104 и −118 б.т. сега.</p>
                                 </div>
 
                                 <!-- 6. Floating Rate -->
                                 <div class="overview-block">
                                     <h3 class="overview-subheading">Плаваща лихва и до 1 г.</h3>
-                                    <p class="overview-paragraph" contenteditable="true">В еврозоната лихвата е 3.86%, с ръст от +0.17 п.п. за месец, +0.26 п.п. за 3М, +0.38 п.п. за 6М и +0.27 п.п. за 12М; z-score е +0.27. Повишение във всички три периода има в 15 държави, най-голямо за 6М в Кипър (+0.71 п.п.), Белгия (+0.54 п.п.), Литва (+0.48 п.п.) и Естония (+0.47 п.п.). Понижение за 6М и 12М има в Словакия, Словения и Малта. В Гърция и Хърватия промените са разнопосочни или близки до нула.</p>
-                                    <p class="overview-paragraph" contenteditable="true">В България лихвата е 2.42%, с промени −0.01 п.п. за 3М, −0.04 п.п. за 6М и −0.39 п.п. за 12М; z-score е −0.98. Спредът се разширява от −78 б.т. преди 12 месеца до −102 б.т. преди 6 месеца, −117 б.т. преди 3 месеца и −144 б.т. сега – най-голямото разширение на спреда сред всички индикатори.</p>
+                                    <p class="overview-paragraph" contenteditable="true">Плаващата лихва в еврозоната е 3.86%, с ръст от +0.26 п.п. за 3М, +0.38 п.п. за 6М и +0.27 п.п. за 12М; z-score е +0.27. Повишение във всички три периода има в 15 държави, най-голямо за 6М в Кипър (+0.71 п.п.) и Белгия (+0.54 п.п.). Спад за 6М и 12М имат Словакия, Словения и Малта.</p>
+                                    <p class="overview-paragraph" contenteditable="true">В България лихвата е 2.42%, с промени −0.01 п.п. за 3М, −0.04 п.п. за 6М и −0.39 п.п. за 12М; z-score е −0.98. Спредът се разширява от −78 б.т. преди 12 месеца до −102, −117 и −144 б.т. сега – най-голямото разширение за 12М сред индикаторите.</p>
                                 </div>
                             </section>
                         </div>
@@ -370,42 +373,42 @@
                                 <!-- 7. Fix 1-5Y -->
                                 <div class="overview-block">
                                     <h3 class="overview-subheading">Фиксирана лихва над 1 до 5 г.</h3>
-                                    <p class="overview-paragraph" contenteditable="true">В еврозоната лихвата е 3.60%, с ръст от +0.13 п.п. за 3М, +0.23 п.п. за 6М и +0.20 п.п. за 12М; z-score е +1.02. С z-score над +1.5 са Испания (+2.52), Нидерландия (+2.28), Финландия (+2.23), Германия (+2.18) и Италия (+1.97). Понижение за 12М има в Литва (−3.41 п.п.), Латвия (−3.08 п.п.), Гърция, Ирландия и Хърватия.</p>
-                                    <p class="overview-paragraph" contenteditable="true">В България лихвата е 3.02%, с разнопосочни промени: −0.07 п.п. за 3М, +0.12 п.п. за 6М и −0.23 п.п. за 12М. Спредът се разширява за 12М (от −15 до −58 б.т.), с колебания между отделните периоди. За Люксембург няма данни за август.</p>
+                                    <p class="overview-paragraph" contenteditable="true">Фиксираната лихва в еврозоната е 3.60%, с ръст от +0.13 п.п. за 3М, +0.23 п.п. за 6М и +0.20 п.п. за 12М; z-score е +1.02. С z-score над +1.5 са Испания (+2.52), Нидерландия (+2.28), Финландия (+2.23), Германия (+2.18) и Италия (+1.97). Спад за 12М има в Литва, Латвия, Гърция, Ирландия, Хърватия и Словения.</p>
+                                    <p class="overview-paragraph" contenteditable="true">В България лихвата е 3.02%, с разнопосочни промени: −0.07 п.п. за 3М, +0.12 п.п. за 6М и −0.23 п.п. за 12М; z-score е −0.31. Спредът се разширява от −15 б.т. преди 12 месеца до −58 б.т. сега.</p>
                                 </div>
 
                                 <!-- 8. Fix 5-10Y -->
                                 <div class="overview-block">
                                     <h3 class="overview-subheading">Фиксирана лихва над 5 до 10 г.</h3>
-                                    <p class="overview-paragraph" contenteditable="true">В еврозоната лихвата е 3.80%, с ръст от +0.14 п.п. за 3М, +0.25 п.п. за 6М и +0.34 п.п. за 12М; z-score е +1.87. С z-score над +1.5 са Испания (+2.51), Белгия (+2.17), Португалия (+2.01), Германия (+1.89), Люксембург (+1.88), Нидерландия (+1.65) и Финландия (+1.63). Понижение за 6М и 12М има в Гърция, Естония и Латвия, като Гърция е със z-score −2.07.</p>
-                                    <p class="overview-paragraph" contenteditable="true">В България лихвата е 2.53%, с промени +1.32 п.п. за 1М и −1.54 п.п. за 3М. Серията е с висока волатилност (стандартно отклонение 1.18 п.п.), затова краткосрочните промени следва да се тълкуват с внимание. Промяна за 12М не е налична. За Кипър няма данни.</p>
+                                    <p class="overview-paragraph" contenteditable="true">Лихвата в еврозоната е 3.80%, с ръст от +0.14 п.п. за 3М, +0.25 п.п. за 6М и +0.34 п.п. за 12М; z-score е +1.87. С z-score над +1.5 са Испания (+2.51), Белгия (+2.17), Португалия (+2.01), Германия (+1.89), Люксембург (+1.88), Нидерландия (+1.65) и Финландия (+1.63). Спад за 6М и 12М има в Гърция, Естония, Латвия и Хърватия.</p>
+                                    <p class="overview-paragraph" contenteditable="true">В България лихвата е 2.53%, с промени +1.32 п.п. за 1М и −1.54 п.п. за 3М; промяна за 12М не е налична. Стандартното отклонение (24М) е 1.18 п.п. Спредът е −127 б.т. при −102 б.т. преди 6 месеца.</p>
                                 </div>
 
                                 <!-- 9. Fix >10Y -->
                                 <div class="overview-block">
                                     <h3 class="overview-subheading">Фиксирана лихва над 10 г.</h3>
-                                    <p class="overview-paragraph" contenteditable="true">В еврозоната лихвата е 3.43%, с ръст от +0.11 п.п. за 3М, +0.17 п.п. за 6М и +0.25 п.п. за 12М; z-score е +2.17. Повишение във всички три периода има в повечето държави с налични данни. С z-score над +1.5 са Португалия (+2.41), Литва (+1.94), Австрия (+1.86), Люксембург (+1.82), Нидерландия (+1.78), Германия (+1.73) и Белгия (+1.60). Понижение за 3М има във Финландия и Хърватия, а за 6М – в Гърция и Словакия.</p>
-                                    <p class="overview-paragraph" contenteditable="true">В България лихвата е 2.52%, без промяна за 3М; промени за 6М и 12М не са налични поради кратката история на серията. Спредът спрямо еврозоната е −91 б.т. За Ирландия, Кипър и Малта няма данни.</p>
+                                    <p class="overview-paragraph" contenteditable="true">Лихвата в еврозоната е 3.43%, с ръст от +0.11 п.п. за 3М, +0.17 п.п. за 6М и +0.25 п.п. за 12М; z-score е +2.17. С z-score над +1.5 са Португалия (+2.41), Литва (+1.94), Австрия (+1.86), Люксембург (+1.82), Нидерландия (+1.78), Германия (+1.73) и Белгия (+1.60). Спад за 3М има във Финландия и Хърватия, а за 6М – в Гърция, Словакия и Хърватия.</p>
+                                    <p class="overview-paragraph" contenteditable="true">В България лихвата е 2.52%, без промяна за 3М; промени за 6М и 12М не са налични. Спредът спрямо еврозоната е −91 б.т. при −80 б.т. преди 3 месеца.</p>
                                 </div>
 
                                 <!-- 10. Loan Growth YoY -->
                                 <div class="overview-block">
                                     <h3 class="overview-subheading">Годишен темп на растеж на жилищните кредити</h3>
-                                    <p class="overview-paragraph" contenteditable="true">В еврозоната ръстът е 2.97%: без промяна за 3М, +0.14 п.п. за 6М и +0.65 п.п. за 12М; z-score е +0.97. Ускорение за 12М има в 17 държави, като най-голямо е то в Гърция (+5.27 п.п.), Словения (+2.72 п.п.), Словакия (+2.68 п.п.) и Португалия (+2.65 п.п.). Забавяне за 3М има в 13 държави. С ръст над 10% са България (25.21%), Литва (14.05%), Хърватия (12.65%), Португалия (11.12%), Малта (10.43%) и Естония (10.29%). Отрицателен ръст има във Финландия (−0.27%). Забавяне за 12М регистрират Финландия, Люксембург, Хърватия и България.</p>
-                                    <p class="overview-paragraph" contenteditable="true">В България темпът на растеж намалява във всички периоди: −0.52 п.п. за 1М, −1.39 п.п. за 3М, −2.59 п.п. за 6М и −2.13 п.п. за 12М. Z-score е −2.15, най-ниската стойност сред всички държави за този индикатор. Разликата в годишните темпове на растеж между България и еврозоната се свива от 25.02 п.п. преди 12 месеца до 24.97 п.п. преди 6 месеца, 23.63 п.п. преди 3 месеца и 22.24 п.п. през август.</p>
+                                    <p class="overview-paragraph" contenteditable="true">Годишният ръст на жилищните кредити в еврозоната е 2.97%: без промяна за 3М, +0.14 п.п. за 6М и +0.65 п.п. за 12М; z-score е +0.97. Ускорение за 12М има в 17 държави, най-голямо в Гърция (+5.27 п.п.) и Словения (+2.72 п.п.). Ръст над 10% имат България (25.21%), Литва (14.05%), Хърватия (12.65%), Португалия (11.12%), Малта (10.43%) и Естония (10.29%). Отрицателен ръст има във Финландия (−0.27%).</p>
+                                    <p class="overview-paragraph" contenteditable="true">В България темпът намалява във всички периоди: −0.52 п.п. за 1М, −1.39 п.п. за 3М, −2.59 п.п. за 6М и −2.13 п.п. за 12М; z-score е −2.15, най-ниският сред всички държави. Разликата спрямо еврозоната се свива от 25.01 п.п. преди 12 месеца до 24.96, 23.62 и 22.23 п.п. през август.</p>
                                 </div>
 
                                 <!-- 11. Rate Outstanding -->
                                 <div class="overview-block">
                                     <h3 class="overview-subheading">Лихва по салда на жилищните кредити</h3>
-                                    <p class="overview-paragraph" contenteditable="true">За разлика от предходните показатели, които се отнасят до новоотпуснатите кредити, лихвата по салда обхваща целия съществуващ портфейл от жилищни кредити. В еврозоната тя е 2.54%, с ръст от +0.05 п.п. за 3М, +0.07 п.п. за 6М и +0.16 п.п. за 12М; z-score е +2.45, най-високият сред индикаторите за еврозоната. Повишение във всички три периода има в 14 държави. Понижение имат Малта, Хърватия и България, а в Кипър, Португалия и Франция промените са разнопосочни.</p>
-                                    <p class="overview-paragraph" contenteditable="true">В България лихвата е 2.65%, с промени −0.02 п.п. за 3М, −0.05 п.п. за 6М и −1.10 п.п. за 12М; z-score е −1.31. Спредът е положителен и се свива: от +137 б.т. преди 12 месеца до +23, +18 и +11 б.т. сега. За Гърция няма данни.</p>
+                                    <p class="overview-paragraph" contenteditable="true">Лихвата по салда обхваща целия съществуващ портфейл от жилищни кредити. В еврозоната тя е 2.54%, с ръст от +0.05 п.п. за 3М, +0.07 п.п. за 6М и +0.16 п.п. за 12М; z-score е +2.45, най-високият сред индикаторите за еврозоната. Повишение във всички три периода има в 14 държави; спад – в Малта, Хърватия и България.</p>
+                                    <p class="overview-paragraph" contenteditable="true">В България лихвата е 2.65%, с промени −0.02 п.п. за 3М, −0.05 п.п. за 6М и −1.10 п.п. за 12М; z-score е −1.31. Спредът е положителен и се свива от +137 б.т. преди 12 месеца до +23, +18 и +11 б.т. сега.</p>
                                 </div>
 
                                 <!-- 12. Country Groups -->
                                 <div class="overview-block">
                                     <h3 class="overview-subheading">Групи държави</h3>
-                                    <p class="overview-paragraph" contenteditable="true">Германия, Нидерландия и Белгия имат z-score над +1.5 в пет или шест от осемте индикатора. Гърция, Хърватия, Малта, Ирландия и България имат нулеви или отрицателни промени в повечето лихвени индикатори за 6М и 12М.</p>
+                                    <p class="overview-paragraph" contenteditable="true">Германия, Нидерландия и Белгия имат z-score над +1.5 в пет или шест от осемте индикатора. Гърция, Хърватия, Малта и България имат нулеви или отрицателни промени в повечето лихвени индикатори за 6М и 12М.</p>
                                 </div>
 
                                 <!-- 13. Trend Summary Table -->
@@ -449,13 +452,13 @@
                                                 <td><strong>Фикс. 5–10 г.</strong></td>
                                                 <td><span class="arrow-up">↑</span> / <span class="arrow-up">↑</span> / <span class="arrow-up">↑</span>, z +1.87</td>
                                                 <td><span class="arrow-down">↓</span> / <span class="arrow-flat">=</span> / н/д, z −0.46</td>
-                                                <td>висока волатилност</td>
+                                                <td>разширява се (6М)</td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Фикс. над 10 г.</strong></td>
                                                 <td><span class="arrow-up">↑</span> / <span class="arrow-up">↑</span> / <span class="arrow-up">↑</span>, z +2.17</td>
                                                 <td><span class="arrow-flat">=</span> / н/д / н/д, z −0.36</td>
-                                                <td>н/д</td>
+                                                <td>разширява се (3М)</td>
                                             </tr>
                                             <tr>
                                                 <td><strong>Ръст на кредитите</strong></td>
@@ -506,7 +509,7 @@
                         <div class="page-content indicator-page-content">
                             <div class="indicator-header-block">
                                 <h2 class="indicator-title" id="title-aprc">Годишен процент на разходите (ГПР / APRC)</h2>
-                                <div class="indicator-commentary" id="commentary-aprc" contenteditable="true">
+                                <div class="indicator-commentary" id="commentary-aprc">
                                      Годишният процент на разходите (APRC / ГПР) по нови жилищни кредити отразява реалната обща цена за кредитополучателя, включително лихвата, комисионите и всички съпътстващи разходи съгласно методологията на ЕЦБ (MIR A2C) и БНБ.
                                 </div>
                             </div>
@@ -566,7 +569,7 @@
                         <div class="page-content indicator-page-content">
                             <div class="indicator-header-block">
                                 <h2 class="indicator-title" id="title-rate">Композитна цена на кредита (Composite Cost of Borrowing – CoB)</h2>
-                                <div class="indicator-commentary" id="commentary-rate" contenteditable="true">
+                                <div class="indicator-commentary" id="commentary-rate">
                                     Показателят обобщава лихвите по новите жилищни кредити с различна продължителност на фиксиране, претеглени според обема им.
                                 </div>
                             </div>
@@ -626,7 +629,7 @@
                         <div class="page-content indicator-page-content">
                             <div class="indicator-header-block">
                                 <h2 class="indicator-title" id="title-fix_f">Плаваща лихва и първоначално фиксиране до 1 г.</h2>
-                                <div class="indicator-commentary" id="commentary-fix_f" contenteditable="true">
+                                <div class="indicator-commentary" id="commentary-fix_f">
                                      Лихвени проценти по нови жилищни кредити с плаваща лихва или първоначално фиксиран период до 1 година. В България този сегмент формира преобладаващата част от пазара.
                                 </div>
                             </div>
@@ -686,7 +689,7 @@
                         <div class="page-content indicator-page-content">
                             <div class="indicator-header-block">
                                 <h2 class="indicator-title" id="title-fix_i">Фиксирана лихва над 1 до 5 г.</h2>
-                                <div class="indicator-commentary" id="commentary-fix_i" contenteditable="true">
+                                <div class="indicator-commentary" id="commentary-fix_i">
                                      Лихвени проценти по нови жилищни заеми с първоначално фиксиране между 1 и 5 години, предоставящи средносрочна сигурност на месечната вноска.
                                 </div>
                             </div>
@@ -746,7 +749,7 @@
                         <div class="page-content indicator-page-content">
                             <div class="indicator-header-block">
                                 <h2 class="indicator-title" id="title-fix_o">Фиксирана лихва над 5 до 10 г.</h2>
-                                <div class="indicator-commentary" id="commentary-fix_o" contenteditable="true">
+                                <div class="indicator-commentary" id="commentary-fix_o">
                                      Лихвени проценти по нови жилищни кредити с първоначален период на фиксиране между 5 и 10 години.
                                 </div>
                             </div>
@@ -806,7 +809,7 @@
                         <div class="page-content indicator-page-content">
                             <div class="indicator-header-block">
                                 <h2 class="indicator-title" id="title-fix_p">Фиксирана лихва над 10 г.</h2>
-                                <div class="indicator-commentary" id="commentary-fix_p" contenteditable="true">
+                                <div class="indicator-commentary" id="commentary-fix_p">
                                      Дългосрочно фиксирани лихвени проценти за период над 10 години, типични за пазари като Франция, Германия, Белгия и Нидерландия.
                                 </div>
                             </div>
@@ -866,7 +869,7 @@
                         <div class="page-content indicator-page-content">
                             <div class="indicator-header-block">
                                 <h2 class="indicator-title" id="title-loan_growth_yoy">Годишен темп на растеж на жилищните кредити (салда)</h2>
-                                <div class="indicator-commentary" id="commentary-loan_growth_yoy" contenteditable="true">
+                                <div class="indicator-commentary" id="commentary-loan_growth_yoy">
                                      Годишен темп на прираст на общата наличност (салда) по жилищни кредити за домакинства, коригиран за прекласификации и трансакции (BSI статистика).
                                 </div>
                             </div>
@@ -926,7 +929,7 @@
                         <div class="page-content indicator-page-content">
                             <div class="indicator-header-block">
                                 <h2 class="indicator-title" id="title-rate_outstanding">Лихва по съществуващите жилищни кредити (салда)</h2>
-                                <div class="indicator-commentary" id="commentary-rate_outstanding" contenteditable="true">
+                                <div class="indicator-commentary" id="commentary-rate_outstanding">
                                      Среднопретеглен лихвен процент по цялата съществуваща наличност (салда) от жилищни заеми, отразяващ реалната тежест върху обслужваните от домакинствата кредити.
                                 </div>
                             </div>

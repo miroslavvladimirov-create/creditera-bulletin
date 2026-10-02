@@ -21,7 +21,8 @@ const btnRefreshData = document.getElementById('btnRefreshData');
 
 // Inputs
 const inputNum = document.getElementById('bulletinNum');
-const inputMonth = document.getElementById('bulletinMonth');
+const inputPublishMonth = document.getElementById('bulletinPublishMonth') || document.getElementById('bulletinMonth');
+const inputDataMonth = document.getElementById('bulletinDataMonth');
 const inputAuthor = document.getElementById('bulletinAuthor');
 const inputText = document.getElementById('summaryText');
 const btnClearDraft = document.getElementById('btnClearDraft');
@@ -30,19 +31,14 @@ const draftStatusBadge = document.getElementById('draftStatusBadge');
 // Preview Header Outputs
 const lblDocNums = document.querySelectorAll('.lblDocNum');
 const lblDocMonths = document.querySelectorAll('.lblDocMonth');
+const lblDocMonthCaps = document.querySelectorAll('.lblDocMonthCaps');
 const lblSummaryText = document.getElementById('lblSummaryText');
 const compilerLine = document.getElementById('compilerLine');
 const brandDisclaimer = document.getElementById('brandDisclaimer');
 const overflowWarnings = document.getElementById('overflowWarnings');
 const overflowList = document.getElementById('overflowList');
 
-// Sliders
-const sliderTableFont = document.getElementById('sliderTableFont');
-const sliderChartHeight = document.getElementById('sliderChartHeight');
-const sliderSpacing = document.getElementById('sliderSpacing');
-const lblTableFont = document.getElementById('lblTableFont');
-const lblChartHeight = document.getElementById('lblChartHeight');
-const lblSpacing = document.getElementById('lblSpacing');
+
 
 // Country codes to Bulgarian names mapping
 const countryNames = {
@@ -128,7 +124,9 @@ function formatPeriodToMonthYear(periodStr) {
         const year = parts[0];
         const monthIdx = parseInt(parts[1], 10) - 1;
         if (monthIdx >= 0 && monthIdx < 12) {
-            return `${monthNamesBG[monthIdx]} ${year} г.`;
+            const mName = monthNamesBG[monthIdx];
+            const capMName = mName.charAt(0).toUpperCase() + mName.slice(1);
+            return `${capMName} ${year} г.`;
         }
     }
     return periodStr;
@@ -144,7 +142,12 @@ function formatPeriodToMonthYearCaps(periodStr) {
             return `${monthNamesBG[monthIdx].toUpperCase()} ${year}`;
         }
     }
-    return periodStr.toUpperCase();
+    return periodStr.toString().replace(/\s*г\.?$/i, '').trim().toUpperCase();
+}
+
+function formatTextToMonthCaps(text) {
+    if (!text) return '';
+    return text.toString().replace(/\s*г\.?$/i, '').trim().toUpperCase();
 }
 
 function formatPeriodToLastDay(periodStr) {
@@ -193,6 +196,15 @@ function formatWarningEditorial(warningStr, refPeriod) {
     return `${cName}: липсват данни за ${refMonthYear}`;
 }
 
+function getSystemPublishMonth() {
+    const now = new Date();
+    const monthIdx = now.getMonth();
+    const year = now.getFullYear();
+    const mName = monthNamesBG[monthIdx] || 'октомври';
+    const capMName = mName.charAt(0).toUpperCase() + mName.slice(1);
+    return `${capMName} ${year} г.`;
+}
+
 // ==========================================================================
 // Main Document Renderer
 // ==========================================================================
@@ -206,40 +218,72 @@ function renderBulletinDocument(jsonData, isRestoringDraft = false) {
     currentMeta = jsonData.meta || {};
 
     // 1. Metadata update
-    if (currentMeta.period && !isRestoringDraft) {
-        const formattedMY = formatPeriodToMonthYear(currentMeta.period);
-        if (inputMonth) inputMonth.value = formattedMY;
-        lblDocMonths.forEach(el => el.innerText = formattedMY);
+    const formattedDataMY = currentMeta.period ? formatPeriodToMonthYear(currentMeta.period) : 'Август 2026 г.';
+    if (inputDataMonth) inputDataMonth.value = formattedDataMY;
 
-        const parts = currentMeta.period.split('-');
-        if (parts.length >= 2) {
-            const issueNum = `${parts[1]} / ${parts[0]}`;
-            if (inputNum) inputNum.value = issueNum;
-            lblDocNums.forEach(el => el.innerText = issueNum);
-        }
+    // Publishing month automatically derived from computer system date
+    const systemPublishMY = getSystemPublishMonth();
+    if (inputPublishMonth && (!inputPublishMonth.value || !isRestoringDraft)) {
+        inputPublishMonth.value = systemPublishMY;
+    }
+
+    const publishMY = inputPublishMonth ? inputPublishMonth.value : systemPublishMY;
+    const publishMYCaps = formatTextToMonthCaps(publishMY);
+
+    lblDocMonths.forEach(el => el.innerText = publishMY);
+    lblDocMonthCaps.forEach(el => el.innerText = publishMYCaps);
+
+    if (inputNum && (!inputNum.value || inputNum.value === '1 / 2026')) {
+        const year = new Date().getFullYear();
+        inputNum.value = `1 / ${year}`;
+        lblDocNums.forEach(el => el.innerText = inputNum.value);
     }
 
     // 2. Render Page 1 (Cover Page)
-    renderCoverPage(jsonData);
+    try {
+        renderCoverPage(jsonData);
+    } catch (err) {
+        console.error('Error rendering Cover Page:', err);
+    }
 
-    // 3. Render Page 2 (Market Overview & Benchmarks)
-    renderPage2(jsonData);
+    // 3. Render Pages 2 & 3 (Market Overview, Benchmarks & Trends)
+    try {
+        renderPage2(jsonData);
+    } catch (err) {
+        console.error('Error rendering Overview Pages 2-3:', err);
+    }
 
-    // 4. Render Pages 3 to 9 (7 Indicators)
+    // 4. Render Pages 4 to 11 (8 Indicators)
     INDICATOR_SEQUENCE.forEach(indCfg => {
-        renderIndicatorPage(indCfg, jsonData);
+        try {
+            renderIndicatorPage(indCfg, jsonData);
+        } catch (err) {
+            console.error(`Error rendering indicator page ${indCfg.key}:`, err);
+        }
     });
 
-    // 5. Render Page 9 Compiler & Disclaimer
-    renderCompilerAndDisclaimer();
+    // 5. Render Page 11 Compiler & Disclaimer
+    try {
+        renderCompilerAndDisclaimer();
+    } catch (err) {
+        console.error('Error rendering Compiler & Disclaimer:', err);
+    }
 
-    // 6. Update brand visuals on all 9 pages
-    updateBrandVisuals();
+    // 6. Update brand visuals on all 11 pages
+    try {
+        updateBrandVisuals();
+    } catch (err) {
+        console.error('Error updating brand visuals:', err);
+    }
 
-    // 7. Check overflow across all 9 pages
-    requestAnimationFrame(() => {
-        checkPagesOverflow();
-    });
+    // 7. Check overflow across all 11 pages
+    try {
+        requestAnimationFrame(() => {
+            checkPagesOverflow();
+        });
+    } catch (err) {
+        console.error('Error checking page overflow:', err);
+    }
 
     if (window.lucide) {
         lucide.createIcons();
@@ -252,13 +296,14 @@ function renderBulletinDocument(jsonData, isRestoringDraft = false) {
 function renderCoverPage(jsonData) {
     const b = (typeof BRANDS !== 'undefined' && BRANDS[currentBrand]) ? BRANDS[currentBrand] : null;
     const periodStr = jsonData.meta?.period || '';
-    const formattedMY = formatPeriodToMonthYear(periodStr);
-    const formattedMYCaps = formatPeriodToMonthYearCaps(periodStr);
+    const formattedDataMY = formatPeriodToMonthYear(periodStr);
+    const publishMY = inputPublishMonth ? inputPublishMonth.value : 'Октомври 2026 г.';
+    const publishMYCaps = formatTextToMonthCaps(publishMY);
     const lastDateStr = formatPeriodToLastDay(periodStr);
 
     // 1. Top row
     const coverDocDateCaps = document.getElementById('coverDocDateCaps');
-    if (coverDocDateCaps) coverDocDateCaps.innerText = formattedMYCaps;
+    if (coverDocDateCaps) coverDocDateCaps.innerText = publishMYCaps;
 
     // 2. Titles & Subtitles
     const coverMainTitle = document.getElementById('coverMainTitle');
@@ -300,8 +345,9 @@ function renderCoverPage(jsonData) {
     }
 
     // Period subtitles on cover KPI
+    const dataMY = inputDataMonth ? inputDataMonth.value : formattedDataMY;
     document.querySelectorAll('.lblKpiPeriodSub').forEach(el => {
-        el.innerText = `данни за ${formattedMY}`;
+        el.innerText = `данни за ${dataMY}`;
     });
 
     // 4. Bottom row
@@ -824,13 +870,13 @@ window.checkPagesOverflow = checkPagesOverflow;
 // ==========================================================================
 function getDraftStorageKey() {
     const period = (currentMeta && currentMeta.period) ? currentMeta.period : 'manual';
-    return `akpb_draft_v2_${period}`;
+    return `akpb_draft_v3_${period}`;
 }
 
 function saveDraft() {
     const key = getDraftStorageKey();
 
-    // 7 Indicator commentaries
+    // Indicator commentaries
     const commentaries = {};
     INDICATOR_SEQUENCE.forEach(indCfg => {
         const el = document.getElementById(`commentary-${indCfg.key}`);
@@ -844,7 +890,8 @@ function saveDraft() {
         savedAt: new Date().toISOString(),
         brand: currentBrand,
         inputNum: inputNum ? inputNum.value : '',
-        inputMonth: inputMonth ? inputMonth.value : '',
+        inputPublishMonth: inputPublishMonth ? inputPublishMonth.value : '',
+        inputDataMonth: inputDataMonth ? inputDataMonth.value : '',
         inputAuthor: inputAuthor ? inputAuthor.value : '',
         coverTocHtml: coverTocList ? coverTocList.innerHTML : '',
         coverLeadHtml: coverLead ? coverLead.innerHTML : '',
@@ -856,9 +903,6 @@ function saveDraft() {
         summaryText: inputText ? inputText.value : '',
         lblSummaryHtml: lblSummaryText ? lblSummaryText.innerHTML : '',
         commentaries: commentaries,
-        sliderTableFont: sliderTableFont ? sliderTableFont.value : null,
-        sliderChartHeight: sliderChartHeight ? sliderChartHeight.value : null,
-        sliderSpacing: sliderSpacing ? sliderSpacing.value : null,
         editedCells: editedCells
     };
 
@@ -900,9 +944,18 @@ function restoreDraft(key) {
             inputNum.value = draft.inputNum;
             lblDocNums.forEach(el => el.innerText = draft.inputNum);
         }
-        if (draft.inputMonth && inputMonth) {
-            inputMonth.value = draft.inputMonth;
-            lblDocMonths.forEach(el => el.innerText = draft.inputMonth);
+        const restoredPublishMonth = draft.inputPublishMonth || draft.inputMonth;
+        if (restoredPublishMonth) {
+            if (inputPublishMonth) inputPublishMonth.value = restoredPublishMonth;
+            lblDocMonths.forEach(el => el.innerText = restoredPublishMonth);
+            const caps = formatTextToMonthCaps(restoredPublishMonth);
+            lblDocMonthCaps.forEach(el => el.innerText = caps);
+        }
+        if (draft.inputDataMonth && inputDataMonth) {
+            inputDataMonth.value = draft.inputDataMonth;
+            document.querySelectorAll('.lblKpiPeriodSub').forEach(el => {
+                el.innerText = `данни за ${draft.inputDataMonth}`;
+            });
         }
         if (draft.inputAuthor && inputAuthor) inputAuthor.value = draft.inputAuthor;
 
@@ -934,31 +987,6 @@ function restoreDraft(key) {
                 const el = document.getElementById(`commentary-${indKey}`);
                 if (el) el.innerHTML = draft.commentaries[indKey];
             });
-        }
-
-        // 6. Sliders
-        const docWrapper = document.getElementById('bulletinDocument');
-        if (draft.sliderTableFont && sliderTableFont) {
-            sliderTableFont.value = draft.sliderTableFont;
-            if (lblTableFont) lblTableFont.innerText = `${parseFloat(draft.sliderTableFont).toFixed(1)}px`;
-            if (docWrapper) docWrapper.style.setProperty('--table-font-size', `${draft.sliderTableFont}px`);
-        }
-        if (draft.sliderChartHeight && sliderChartHeight) {
-            let val = parseInt(draft.sliderChartHeight, 10);
-            if (val === 140) val = 300; // migrate old 140px default to full stretch
-            sliderChartHeight.value = val;
-            if (val >= 300) {
-                if (lblChartHeight) lblChartHeight.innerText = 'Без лимит';
-                if (docWrapper) docWrapper.style.setProperty('--chart-max-height', 'none');
-            } else {
-                if (lblChartHeight) lblChartHeight.innerText = `${val}px`;
-                if (docWrapper) docWrapper.style.setProperty('--chart-max-height', `${val}px`);
-            }
-        }
-        if (draft.sliderSpacing && sliderSpacing) {
-            sliderSpacing.value = draft.sliderSpacing;
-            if (lblSpacing) lblSpacing.innerText = `${draft.sliderSpacing}px`;
-            if (docWrapper) docWrapper.style.setProperty('--section-spacing', `${draft.sliderSpacing}px`);
         }
 
         // 7. Edited cells
@@ -1024,9 +1052,28 @@ function setupEventListeners() {
         });
     }
 
-    if (inputMonth) {
-        inputMonth.addEventListener('input', (e) => {
-            lblDocMonths.forEach(el => el.innerText = e.target.value);
+    if (inputPublishMonth) {
+        inputPublishMonth.addEventListener('input', (e) => {
+            const val = e.target.value;
+            lblDocMonths.forEach(el => el.innerText = val);
+            const caps = formatTextToMonthCaps(val);
+            lblDocMonthCaps.forEach(el => el.innerText = caps);
+            debounceSaveDraft();
+        });
+    }
+
+    if (inputDataMonth) {
+        inputDataMonth.addEventListener('input', (e) => {
+            const val = e.target.value;
+            document.querySelectorAll('.lblKpiPeriodSub').forEach(el => {
+                el.innerText = `данни за ${val}`;
+            });
+            debounceSaveDraft();
+        });
+    }
+
+    if (inputAuthor) {
+        inputAuthor.addEventListener('input', () => {
             debounceSaveDraft();
         });
     }
@@ -1087,42 +1134,7 @@ function setupEventListeners() {
         }
     });
 
-    // Sliders
-    const docWrapper = document.getElementById('bulletinDocument');
-    if (sliderTableFont) {
-        sliderTableFont.addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value).toFixed(1);
-            if (lblTableFont) lblTableFont.innerText = `${val}px`;
-            if (docWrapper) docWrapper.style.setProperty('--table-font-size', `${val}px`);
-            debounceSaveDraft();
-            checkPagesOverflow();
-        });
-    }
 
-    if (sliderChartHeight) {
-        sliderChartHeight.addEventListener('input', (e) => {
-            const val = parseInt(e.target.value, 10);
-            if (val >= 300) {
-                if (lblChartHeight) lblChartHeight.innerText = 'Без лимит';
-                if (docWrapper) docWrapper.style.setProperty('--chart-max-height', 'none');
-            } else {
-                if (lblChartHeight) lblChartHeight.innerText = `${val}px`;
-                if (docWrapper) docWrapper.style.setProperty('--chart-max-height', `${val}px`);
-            }
-            debounceSaveDraft();
-            checkPagesOverflow();
-        });
-    }
-
-    if (sliderSpacing) {
-        sliderSpacing.addEventListener('input', (e) => {
-            const val = parseInt(e.target.value, 10);
-            if (lblSpacing) lblSpacing.innerText = `${val}px`;
-            if (docWrapper) docWrapper.style.setProperty('--section-spacing', `${val}px`);
-            debounceSaveDraft();
-            checkPagesOverflow();
-        });
-    }
 
     // Clear draft
     if (btnClearDraft) {
@@ -1277,7 +1289,7 @@ function handleUploadedFile(file) {
 async function generatePDF(brandOverride) {
     const targetBrand = brandOverride || currentBrand;
     const b = (typeof BRANDS !== 'undefined' && BRANDS[targetBrand]) ? BRANDS[targetBrand] : { pdfPrefix: 'АКПБ_Бюлетин' };
-    const monthName = (inputMonth ? inputMonth.value : 'Бюлетин').replace(/\s+/g, '_');
+    const monthName = (inputPublishMonth ? inputPublishMonth.value : (inputDataMonth ? inputDataMonth.value : 'Бюлетин')).replace(/\s+/g, '_');
     const pages = Array.from(document.querySelectorAll('.pdf-page'));
 
     if (pages.length === 0) {
@@ -1316,7 +1328,12 @@ async function generatePDF(brandOverride) {
             pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
         }
 
-        pdf.save(`${b.pdfPrefix}_${monthName}.pdf`);
+        const rawIssueNum = (inputNum ? inputNum.value : '1').replace(/\s*\/\s*/g, '-').replace(/\s+/g, '_').replace(/[\\/:*?"<>|]/g, '');
+        const cleanIssue = rawIssueNum ? `_Брой_${rawIssueNum}` : '';
+        const brandTag = (b.name || targetBrand).replace(/\s+/g, '_');
+        const fullFileName = `Ипотечен_бюлетин_${brandTag}_${monthName}${cleanIssue}.pdf`.replace(/__+/g, '_');
+
+        pdf.save(fullFileName);
     } catch (err) {
         console.error('PDF Generation error:', err);
         alert('Грешка при генерирането на PDF.');

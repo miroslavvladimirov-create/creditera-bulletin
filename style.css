@@ -39,12 +39,12 @@ body:not([data-brand]) {
 body[data-brand="creditera"] {
     --color-primary: #202E64;
     --color-primary-light: #2c3e80;
-    --color-accent: #3EA93F;
+    --color-accent: #3EA93D;
     --color-accent-dark: #328c33;
-    --color-gold: #3EA93F;
+    --color-gold: #3EA93D;
     --color-gold-dark: #328c33;
     --color-bg-light: #F1F8F1;
-    --brand-divider-gradient: linear-gradient(90deg, #202E64 0%, #3EA93F 100%);
+    --brand-divider-gradient: linear-gradient(90deg, #202E64 0%, #3EA93D 100%);
 }
 
 .brand-btn-group {
@@ -815,11 +815,20 @@ body[data-brand="creditera"] .pdf-page.cover-page .cover-logo-box {
 body[data-brand="creditera"] .pdf-page.cover-page .cover-logo-box .creditera-cover-brand-title {
     font-family: var(--font-heading);
     font-size: 26pt;
-    font-weight: 800;
-    color: #ffffff;
-    letter-spacing: 2.5px;
+    font-weight: 900;
+    letter-spacing: 2px;
     text-transform: uppercase;
     line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-logo-box .creditera-cover-brand-title .brand-credit {
+    color: #ffffff;
+}
+
+body[data-brand="creditera"] .pdf-page.cover-page .cover-logo-box .creditera-cover-brand-title .brand-era {
+    color: #202E64;
 }
 
 body[data-brand="creditera"] .pdf-page.cover-page .cover-logo-box img {
@@ -1372,7 +1381,7 @@ body[data-brand="creditera"] .pdf-page:not(.cover-page) .pdf-mini-header .pdf-mi
 body[data-brand="creditera"] .pdf-page:not(.cover-page) .pdf-mini-header .pdf-mini-logo a,
 body[data-brand="creditera"] .pdf-page:not(.cover-page) .pdf-mini-header .pdf-mini-logo-link {
     text-decoration: none;
-    color: #ffffff;
+    color: inherit;
     display: inline-flex;
     align-items: center;
     transition: opacity 0.2s ease;
@@ -1385,12 +1394,13 @@ body[data-brand="creditera"] .pdf-page:not(.cover-page) .pdf-mini-header .pdf-mi
 body[data-brand="creditera"] .pdf-page:not(.cover-page) .pdf-mini-header .pdf-mini-logo-text,
 body[data-brand="creditera"] .pdf-page:not(.cover-page) .pdf-mini-header .pdf-mini-brand-text {
     font-family: var(--font-heading);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: #ffffff;
     line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
 
 body[data-brand="creditera"] .pdf-page:not(.cover-page) .pdf-mini-header .pdf-mini-logo img {
@@ -1426,7 +1436,7 @@ body[data-brand="creditera"] .pdf-page:not(.cover-page) .pdf-divider-mini {
     display: none;
 }
 
-/* CreditERA Brand Footer Ribbon (Pages 2 to 9) */
+/* CreditERA Brand Footer Ribbon (Pages 1 to 11) */
 body[data-brand="creditera"] .pdf-footer {
     position: absolute;
     bottom: 0;
@@ -1434,7 +1444,7 @@ body[data-brand="creditera"] .pdf-footer {
     right: 0;
     width: 210mm;
     height: 13mm;
-    background: #3EA93F;
+    background: #3EA93D;
     color: #ffffff;
     padding: 0 14mm;
     display: flex;
@@ -1479,17 +1489,21 @@ body[data-brand="creditera"] .pdf-footer .footer-info {
 
 body[data-brand="creditera"] .pdf-footer .footer-brand-title {
     font-family: var(--font-heading);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 900;
+    letter-spacing: 1.2px;
     line-height: 1.1;
     text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 body[data-brand="creditera"] .pdf-footer .footer-brand-title a {
     color: inherit;
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
     transition: opacity 0.2s ease;
 }
 
@@ -1504,6 +1518,35 @@ body[data-brand="creditera"] .pdf-footer .footer-brand-slogan {
     line-height: 1.1;
     margin-top: 1px;
     display: block !important;
+}
+
+/* Generic inline brand helper */
+.creditera-brand-inline {
+    font-family: var(--font-heading);
+    display: inline-flex;
+    align-items: baseline;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.creditera-brand-inline .brand-credit {
+    color: #ffffff;
+    font-weight: 900;
+}
+
+.creditera-brand-inline .brand-era {
+    color: #202E64;
+    font-weight: 900;
+}
+
+.creditera-brand-inline.brand-on-light .brand-credit {
+    color: #3EA93D;
+    font-weight: 900;
+}
+
+.creditera-brand-inline.brand-on-light .brand-era {
+    color: #202E64;
+    font-weight: 900;
 }
 
 body[data-brand="creditera"] .pdf-footer .footer-page-num {
