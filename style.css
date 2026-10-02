@@ -1855,4 +1855,10 @@ body[data-brand="creditera"] .topic-badge {
     line-height: 1.2;
 }
 
+.topic-page .compiler-disclaimer-box {
+    margin-top: auto !important;
+    margin-bottom: 0 !important;
+}
+
+
 
